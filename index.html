@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -6,25 +7,44 @@
 <title>Benimle çıkar mısın? — modern 💗</title>
 <style>
   :root{
+    /* default = mor */
     --bg0:#0f1020; --bg1:#191a2e; --ink:#e9e9ef; --muted:#a7a7b8;
     --glass: rgba(255,255,255,.12);
     --border: rgba(255,255,255,.18);
-    --yes:#ff4da0; --yes2:#ff7ac8;
+    --yes:#a46bff; --yes2:#d47cff;     /* mor */
     --no:#7c86ff;  --no2:#9eb0ff;
+    --blob1:#c38bff; --blob2:#8fa0ff; --blob3:#2ee6a6;
     --ok:#2ee6a6;
-    --yes-scale:1;
-    --yes-font:1rem;
-    --yes-pad:16px 22px;
+    --yes-scale:1; --yes-font:1rem; --yes-pad:16px 22px;
+  }
+  /* Tema: deniz */
+  [data-theme="deniz"]{
+    --bg0:#081b24; --bg1:#0f2a33; --ink:#e9f6ff; --muted:#9fb7c3;
+    --yes:#00b3ff; --yes2:#4dd5ff;
+    --no:#009a9a;  --no2:#26c6c6;
+    --blob1:#00c2ff; --blob2:#00e6c3; --blob3:#7af0ff;
+  }
+  /* Tema: güneş */
+  [data-theme="gunes"]{
+    --bg0:#1f1300; --bg1:#2c1b02; --ink:#fff6e8; --muted:#d9c1a3;
+    --yes:#ff8a00; --yes2:#ffbb33;
+    --no:#ff4d5a;  --no2:#ff808a;
+    --blob1:#ffcc66; --blob2:#ff8a66; --blob3:#ffd54d;
+  }
+  /* Tema: zümrüt */
+  [data-theme="zumrut"]{
+    --bg0:#061511; --bg1:#0a221b; --ink:#e3fff6; --muted:#a6cbbf;
+    --yes:#00c98b; --yes2:#43e6aa;
+    --no:#3aa1ff;  --no2:#79c2ff;
+    --blob1:#00e6a6; --blob2:#38dfff; --blob3:#66ffcc;
   }
 
-  /* Light */
+  /* Light fallback (mor varyasyonu) */
   @media (prefers-color-scheme: light){
     :root{
       --bg0:#f6f7ff; --bg1:#ffffff; --ink:#1b1b22; --muted:#6d6e80;
       --glass: rgba(255,255,255,.65);
       --border: rgba(30,30,60,.08);
-      --yes:#ff4d8d; --yes2:#ff84b1;
-      --no:#666ee8;  --no2:#9aa2ff;
     }
   }
 
@@ -35,8 +55,8 @@
   body{
     margin:0; color:var(--ink);
     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
-    background: radial-gradient(1100px 800px at 15% 10%, rgba(255,120,178,.22), transparent 55%),
-                radial-gradient(1100px 800px at 85% 90%, rgba(124,134,255,.22), transparent 55%),
+    background: radial-gradient(1100px 800px at 15% 10%, color-mix(in oklab, var(--blob1) 30%, transparent), transparent 55%),
+                radial-gradient(1100px 800px at 85% 90%, color-mix(in oklab, var(--blob2) 30%, transparent), transparent 55%),
                 linear-gradient(120deg, var(--bg0), var(--bg1));
     min-height:100%;
     display:grid; place-items:center;
@@ -48,17 +68,33 @@
   .blobs{ position:fixed; inset:0; pointer-events:none; filter: blur(50px) saturate(120%); opacity:.6 }
   .blob{
     position:absolute; width:42vmax; height:42vmax; border-radius:50%;
-    background: radial-gradient(circle at 30% 30%, var(--yes2), transparent 60%);
+    background: radial-gradient(circle at 30% 30%, var(--blob1), transparent 60%);
     mix-blend-mode: plus-lighter;
     animation: float 16s ease-in-out infinite;
   }
-  .blob.b2{ left:auto; right:-10%; top:10%; background:radial-gradient(circle at 70% 30%, var(--no2), transparent 60%); animation-duration:20s }
-  .blob.b3{ left:40%; top:70%; background:radial-gradient(circle at 50% 50%, #2ee6a6, transparent 60%); animation-duration:22s }
+  .blob.b2{ right:-10%; top:10%; background:radial-gradient(circle at 70% 30%, var(--blob2), transparent 60%); animation-duration:20s }
+  .blob.b3{ left:40%; top:70%; background:radial-gradient(circle at 50% 50%, var(--blob3), transparent 60%); animation-duration:22s }
 
   @keyframes float{
     0%,100%{ transform:translateY(0) translateX(0) scale(1) }
     50%    { transform:translateY(-6%) translateX(3%) scale(1.06) }
   }
+
+  /* ====== Top Bar (Tema Paleti) ====== */
+  .topbar{
+    position:fixed; top: max(10px, env(safe-area-inset-top)); right: max(10px, env(safe-area-inset-right));
+    display:flex; gap:8px; align-items:center; z-index:60;
+    background: var(--glass); border:1px solid var(--border); backdrop-filter: blur(10px) saturate(120%);
+    padding:6px 10px; border-radius:999px;
+  }
+  .chip{
+    width:22px; height:22px; border-radius:50%; border:1px solid var(--border); cursor:pointer;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .chip.mor{    background:linear-gradient(135deg,#a46bff,#d47cff) }
+  .chip.deniz{  background:linear-gradient(135deg,#00b3ff,#4dd5ff) }
+  .chip.gunes{  background:linear-gradient(135deg,#ff8a00,#ffbb33) }
+  .chip.zumrut{ background:linear-gradient(135deg,#00c98b,#43e6aa) }
 
   /* ====== Glass Card ====== */
   .card{
@@ -69,32 +105,22 @@
     backdrop-filter: blur(14px) saturate(120%);
     -webkit-backdrop-filter: blur(14px) saturate(120%);
     padding: clamp(20px, 4vw, 36px);
-    box-shadow:
-      0 10px 30px rgba(0,0,0,.18),
-      inset 0 1px 0 rgba(255,255,255,.15);
+    box-shadow: 0 10px 30px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.15);
     position:relative; overflow:visible;
     transform-style: preserve-3d;
   }
-
-  /* tilt hint shine */
   .shine{
     content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
     background: radial-gradient(600px 300px at var(--mx,60%) var(--my,20%), rgba(255,255,255,.35), transparent 60%);
-    transition: opacity .3s ease;
-    opacity:.7;
+    transition: opacity .3s ease; opacity:.7;
   }
 
-  h1{
-    margin:0 0 6px; text-align:center; line-height:1.05;
-    font-size:clamp(26px, 5.8vw, 48px); font-weight:900; letter-spacing:-.02em;
-  }
-  .sub{
-    margin:0; text-align:center; color:var(--muted);
-    font-size:clamp(14px, 2.9vw, 16px)
-  }
+  h1{ margin:0 0 6px; text-align:center; line-height:1.05; font-size:clamp(26px, 5.8vw, 48px); font-weight:900; letter-spacing:-.02em; }
+  .sub{ margin:0; text-align:center; color:var(--muted); font-size:clamp(14px, 2.9vw, 16px) }
 
   /* ====== Buttons ====== */
   .buttons{
+    position:relative; /* Hayır burada kaçacak */
     margin: min(6vw,28px) auto 12px;
     display:flex; flex-wrap:wrap; gap:14px; justify-content:center; align-items:center;
     min-height:96px;
@@ -103,82 +129,74 @@
   button{
     border:none; border-radius:16px; cursor:pointer; touch-action:manipulation;
     min-height:52px; min-width:220px; font-weight:900; letter-spacing:.2px;
-    transition:
-      transform .18s cubic-bezier(.2,.9,.2,1),
-      background-color .18s ease, color .18s ease, box-shadow .18s ease, opacity .18s ease;
+    transition: transform .18s cubic-bezier(.2,.9,.2,1), background-color .18s ease, color .18s ease, box-shadow .18s ease, opacity .18s ease;
     box-shadow: 0 8px 24px rgba(0,0,0,.18);
   }
 
   .btn-yes{
     background: linear-gradient(135deg, var(--yes), var(--yes2));
-    color:#fff;
-    transform: translateZ(0) scale(var(--yes-scale));
-    font-size: calc(var(--yes-font));
-    padding: var(--yes-pad);
+    color:#fff; transform: translateZ(0) scale(var(--yes-scale));
+    font-size: calc(var(--yes-font)); padding: var(--yes-pad);
   }
   .btn-yes:active{ transform:scale(calc(var(--yes-scale)*.98)); }
 
   .btn-no{
     background: linear-gradient(135deg, var(--no), var(--no2));
-    color:#fff; padding:16px 22px; font-size:1rem;
+    color:#fff; padding:16px 22px; font-size:1rem; position:relative;
   }
   .btn-no:active{ opacity:.9 }
 
-  /* FAB yes bottom */
-  .fab{
-    position: fixed; left: 50%; bottom: max(12px, env(safe-area-inset-bottom));
-    transform: translateX(-50%); z-index: 50; display:none;
-    filter: drop-shadow(0 12px 28px rgba(0,0,0,.28));
+  /* Akıllı Mesaj paneli */
+  .smart{
+    display:none; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:10px;
   }
+  .smart.show{ display:flex }
+  .btn-outline{
+    background:transparent; color:var(--ink); border:1px solid var(--border); padding:12px 16px; border-radius:12px; font-weight:800;
+    backdrop-filter: blur(8px);
+  }
+
+  /* FAB yes bottom (mobile tek “Evet”) */
+  .fab{ position: fixed; left: 50%; bottom: max(12px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 50; display:none; filter: drop-shadow(0 12px 28px rgba(0,0,0,.28)); }
   .fab .btn-yes{ border-radius:999px; min-width: clamp(240px, 72vw, 460px); min-height:60px }
 
   @media (max-width:680px){
     .buttons{ flex-direction:column }
-    .fab{ display:block }
+    #yesTop{ display:none }       /* mobilde üstteki Evet gizli */
+    .fab{ display:block }         /* alttaki Evet aktif */
   }
 
-  /* ====== Mascot (minimal SVG) ====== */
-  .mascot{
-    display:flex; gap:14px; justify-content:center; align-items:center; flex-wrap:wrap; margin-top:6px;
-  }
+  /* Mascot */
+  .mascot{ display:flex; gap:14px; justify-content:center; align-items:center; flex-wrap:wrap; margin-top:6px; }
   .face{ width: clamp(74px, 22vw, 100px); height:auto; filter: drop-shadow(0 8px 18px rgba(0,0,0,.20)) }
   .bubble{
-    background: rgba(255,255,255,.75);
-    border:1px solid rgba(255,255,255,.6);
-    padding:10px 14px; border-radius:14px; font-weight:800;
-    color:inherit; backdrop-filter: blur(6px);
+    background: rgba(255,255,255,.75); border:1px solid rgba(255,255,255,.6);
+    padding:10px 14px; border-radius:14px; font-weight:800; color:inherit; backdrop-filter: blur(6px);
     max-width:min(560px, 92%); text-align:center; font-size:clamp(14px, 3.5vw, 16px)
   }
   @media (prefers-color-scheme: dark){
     .bubble{ background: rgba(32,32,48,.55); border-color: rgba(255,255,255,.12) }
   }
 
-  /* ====== Hearts Gooey ====== */
-  .fx{
-    position:absolute; inset:0; pointer-events:none; overflow:hidden;
-    filter: url(#goo);
-  }
-  .heart{
-    position:absolute; font-size:22px; animation: rise 1.9s ease-in forwards; opacity:0;
-  }
-  @keyframes rise{
-    0%{ transform: translateY(10px) scale(.7); opacity:0 }
-    10%{ opacity:1 }
-    100%{ transform: translateY(-160%) scale(1.4); opacity:0 }
-  }
+  /* Hearts Gooey */
+  .fx{ position:absolute; inset:0; pointer-events:none; overflow:hidden; filter: url(#goo); }
+  .heart{ position:absolute; font-size:22px; animation: rise 1.9s ease-in forwards; opacity:0; }
+  @keyframes rise{ 0%{ transform: translateY(10px) scale(.7); opacity:0 } 10%{ opacity:1 } 100%{ transform: translateY(-160%) scale(1.4); opacity:0 } }
 
-  /* tiny info */
   .tiny{ text-align:center; color:var(--muted); font-size:12px; margin-top:8px }
-
-  /* reduce motion */
-  @media (prefers-reduced-motion: reduce){
-    .blob{ animation:none }
-    .btn-yes,.btn-no{ transition:none }
-    .heart{ animation:none }
-  }
+  @media (prefers-reduced-motion: reduce){ .blob{ animation:none } .btn-yes,.btn-no{ transition:none } .heart{ animation:none } }
 </style>
 </head>
 <body>
+  <!-- Tema Paleti -->
+  <div class="topbar" aria-label="Tema paleti">
+    <span style="font-size:12px; font-weight:800; opacity:.8">Tema:</span>
+    <button class="chip mor"    title="Mor"     data-theme="mor"    aria-label="Mor"></button>
+    <button class="chip deniz"  title="Deniz"   data-theme="deniz"  aria-label="Deniz"></button>
+    <button class="chip gunes"  title="Güneş"   data-theme="gunes"  aria-label="Güneş"></button>
+    <button class="chip zumrut" title="Zümrüt"  data-theme="zumrut" aria-label="Zümrüt"></button>
+  </div>
+
   <!-- animated blobs -->
   <div class="blobs" aria-hidden="true">
     <div class="blob b1" style="left:-8%; top:-6%"></div>
@@ -198,6 +216,13 @@
       <div class="fx" id="fx"></div>
     </div>
 
+    <!-- Akıllı Mesaj paneli (Evet sonrası görünür) -->
+    <div class="smart" id="smart">
+      <button class="btn-outline" id="btnSmart">Mesaj At (Akıllı)</button>
+      <button class="btn-outline" id="btnWA">WhatsApp</button>
+      <button class="btn-outline" id="btnIG">Instagram</button>
+    </div>
+
     <div class="mascot">
       <svg id="face" class="face" viewBox="0 0 100 100" aria-hidden="true">
         <defs>
@@ -213,10 +238,10 @@
       <div id="bubble" class="bubble">Merhaba! Cevabını heyecanla bekliyorum 💫</div>
     </div>
 
-    <p class="tiny">İpucu: “Hayır” inatçılaştıkça “Evet” büyür. Mobilde alttaki Evet de var 👇</p>
+    <p class="tiny">İpucu: “Hayır” inatçılaştıkça “Evet” büyür. Mobilde sadece alttaki Evet görünür 👇</p>
   </main>
 
-  <!-- bottom FAB -->
+  <!-- bottom FAB (mobil tek “Evet”) -->
   <div class="fab">
     <button class="btn-yes" id="yesFab" aria-label="Evet (altta)">Evet</button>
   </div>
@@ -228,9 +253,10 @@
 
 <script>
 (() => {
+  const root = document.documentElement;
   const yesTop = document.getElementById('yesTop');
   const yesFab = document.getElementById('yesFab');
-  const yesButtons = [yesTop, yesFab];
+  const yesButtons = [yesTop, yesFab].filter(Boolean);
   const no = document.getElementById('no');
   const bubble = document.getElementById('bubble');
   const mouth = document.getElementById('mouth');
@@ -239,6 +265,20 @@
   const card = document.getElementById('card');
   const shine = card.querySelector('.shine');
   const fx = document.getElementById('fx');
+  const buttonsWrap = document.getElementById('buttons');
+  const smart = document.getElementById('smart');
+  const btnSmart = document.getElementById('btnSmart');
+  const btnWA = document.getElementById('btnWA');
+  const btnIG = document.getElementById('btnIG');
+
+  /* ---- Tema Paleti ---- */
+  document.querySelectorAll('.chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      const t = chip.getAttribute('data-theme');
+      if(t === 'mor') root.removeAttribute('data-theme');
+      else root.setAttribute('data-theme', t);
+    });
+  });
 
   /* ---- Magnetic tilt + shine ---- */
   card.addEventListener('pointermove', (e)=>{
@@ -249,68 +289,50 @@
     shine.style.setProperty('--mx', `${x*100}%`);
     shine.style.setProperty('--my', `${y*100}%`);
   });
-  card.addEventListener('pointerleave', ()=>{
-    card.style.transform = 'none';
-  });
+  card.addEventListener('pointerleave', ()=>{ card.style.transform = 'none'; });
 
   /* ---- Copy that gets meaner ---- */
   const noTexts = [
-    "Hayır",
-    "HAYIR.",
-    "Net: Hayır ❌",
-    "Asla.",
-    "Israr etme, hayır.",
-    "Konu kapandı: Hayır.",
-    "Son kararım: Hayır.",
-    "Hayır ve tekrar hayır.",
-    "Hâlâ hayır.",
-    "Kesinlikle HAYIR."
+    "Hayır","HAYIR.","Net: Hayır ❌","Asla.","Israr etme, hayır.",
+    "Konu kapandı: Hayır.","Son kararım: Hayır.","Hayır ve tekrar hayır.",
+    "Hâlâ hayır.","Kesinlikle HAYIR."
   ];
   let noCount = 0;
 
   /* ---- Haptics ---- */
   const vibrate = (ms=14) => (navigator.vibrate?.(ms));
 
-  /* ---- YES growth (modern spring-ish) ---- */
+  /* ---- YES growth ---- */
   function applyYesGrowth(){
     const base = 1 + noCount * 0.16;
     const scale = Math.min(base, 3.2);
-    const font = Math.min(1 + noCount * 0.085, 2.0); // rem multiplier
+    const font = Math.min(1 + noCount * 0.085, 2.0);
     const padV = Math.min(16 + noCount * 2, 28);
     const padH = Math.min(22 + noCount * 7, 68);
-    document.documentElement.style.setProperty('--yes-scale', scale);
-    document.documentElement.style.setProperty('--yes-font', `calc(1rem * ${font})`);
-    document.documentElement.style.setProperty('--yes-pad', `${padV}px ${padH}px`);
-    // subtle spring pop using WAAPI on both yes buttons
+    root.style.setProperty('--yes-scale', scale);
+    root.style.setProperty('--yes-font', `calc(1rem * ${font})`);
+    root.style.setProperty('--yes-pad', `${padV}px ${padH}px`);
     yesButtons.forEach(btn=>{
       btn.animate([{transform:`scale(${scale*1.04})`},{transform:`scale(${scale})`}],
         {duration:180, easing:'cubic-bezier(.2,1.4,.2,1)'} );
     });
   }
 
-  function setNoText(){
-    no.textContent = noTexts[Math.min(noCount, noTexts.length-1)];
-  }
+  function setNoText(){ no.textContent = noTexts[Math.min(noCount, noTexts.length-1)]; }
 
   function mascotReact(){
-    // eyes track the last click position a bit
-    const smile = 'M40 58 Q50 64 60 58';
-    const flat  = 'M40 60 Q50 62 60 60';
-    const sad   = 'M40 63 Q50 58 60 63';
-    const sadder= 'M40 66 Q50 54 60 66';
-
-    if(noCount === 0){ mouth.setAttribute('d', smile); bubble.textContent="Merhaba! Cevabını heyecanla bekliyorum 💫"; }
-    else if(noCount <= 2){ mouth.setAttribute('d', flat); bubble.textContent="Naz mı yapıyorsun? 🙂"; }
-    else if(noCount <= 5){ mouth.setAttribute('d', sad); bubble.textContent="Of… yine hayır mı?"; }
-    else { mouth.setAttribute('d', sadder); bubble.textContent="Kalbim kırılıyor ama pes etmiyorum 💧"; }
-
+    const smile='M40 58 Q50 64 60 58', flat='M40 60 Q50 62 60 60', sad='M40 63 Q50 58 60 63', sadder='M40 66 Q50 54 60 66';
+    if(noCount===0){ mouth.setAttribute('d',smile); bubble.textContent="Merhaba! Cevabını heyecanla bekliyorum 💫"; }
+    else if(noCount<=2){ mouth.setAttribute('d',flat); bubble.textContent="Naz mı yapıyorsun? 🙂"; }
+    else if(noCount<=5){ mouth.setAttribute('d',sad); bubble.textContent="Of… yine hayır mı?"; }
+    else { mouth.setAttribute('d',sadder); bubble.textContent="Kalbim kırılıyor ama pes etmiyorum 💧"; }
     bubble.animate([{transform:'scale(.95)', opacity:.9},{transform:'scale(1)', opacity:1}], {duration:160, easing:'ease-out'});
   }
 
-  /* ---- Hearts Gooey burst ---- */
+  /* ---- Hearts burst ---- */
   function burstHearts(){
-    const rect = yesTop.getBoundingClientRect();
-    const baseX = rect.left + rect.width/2 - card.getBoundingClientRect().left;
+    const rect = (yesTop.offsetParent ? yesTop : yesFab).getBoundingClientRect();
+    const baseX = rect.left + rect.width/2 - buttonsWrap.getBoundingClientRect().left;
     const pool = ['💖','💗','💘','💝'];
     for(let i=0;i<16;i++){
       const span = document.createElement('span');
@@ -325,10 +347,10 @@
     }
   }
 
-  /* ---- Eye track toward pointer (subtle) ---- */
+  /* ---- Eye track ---- */
   let lastPointer = {x:0, y:0};
   window.addEventListener('pointermove', (e)=>{ lastPointer = {x:e.clientX, y:e.clientY}; });
-  function trackEyes(){
+  (function trackEyes(){
     const r = card.getBoundingClientRect();
     const ex = (lastPointer.x - (r.left + r.width/2)) / (r.width/2);
     const ey = (lastPointer.y - (r.top + r.height/2)) / (r.height/2);
@@ -337,8 +359,64 @@
     eyeL.setAttribute('cx', 39+dx); eyeL.setAttribute('cy', 43+dy);
     eyeR.setAttribute('cx', 61+dx); eyeR.setAttribute('cy', 43+dy);
     requestAnimationFrame(trackEyes);
+  })();
+
+  /* ---- No evasive inside canvas ---- */
+  function moveNoInside(){
+    if(noCount < 3) return;
+    const wrapRect = buttonsWrap.getBoundingClientRect();
+    const btnRect  = no.getBoundingClientRect();
+    const maxLeft = wrapRect.width - btnRect.width - 6;
+    const maxTop  = Math.max(0, wrapRect.height - btnRect.height - 6);
+    const left = Math.max(0, Math.min(maxLeft, Math.random()*maxLeft));
+    const top  = Math.max(0, Math.min(maxTop,  Math.random()*maxTop));
+    // absolute pozisyonu .buttons içinde tut
+    if(getComputedStyle(no).position !== 'absolute'){
+      no.style.position = 'absolute';
+    }
+    no.style.left = left + 'px';
+    no.style.top  = top  + 'px';
   }
-  trackEyes();
+
+  /* ---- Smart Messaging ---- */
+  const MSG = encodeURIComponent("Evet dedim! İlk buluşmayı planlayalım mı? 💘");
+  function openWhatsApp(){
+    // Uygulamayı dene, sonra web'e düş
+    const app = `whatsapp://send?text=${MSG}`;
+    const web = `https://wa.me/?text=${MSG}`;
+    let bounced = false;
+    const t = Date.now();
+    setTimeout(()=>{ if(!bounced && Date.now()-t<1200) window.open(web, '_blank'); }, 700);
+    window.location.href = app;
+    setTimeout(()=> bounced=true, 1200);
+  }
+  function openInstagram(){
+    // App -> web fallback
+    const app = 'instagram://direct';
+    const web = 'https://www.instagram.com/direct/inbox/';
+    let bounced = false;
+    const t = Date.now();
+    setTimeout(()=>{ if(!bounced && Date.now()-t<1200) window.open(web, '_blank'); }, 700);
+    window.location.href = app;
+    setTimeout(()=> bounced=true, 1200);
+  }
+  function openSmart(){
+    // Mobilde önce WhatsApp, sonra Instagram, sonra web WA
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if(isMobile){
+      // WA -> IG -> WA Web
+      const webWa = `https://wa.me/?text=${MSG}`;
+      const step1 = () => { window.location.href = `whatsapp://send?text=${MSG}`; };
+      const step2 = () => { window.location.href = 'instagram://direct'; };
+      const step3 = () => { window.open(webWa, '_blank'); };
+      // zincir
+      step1();
+      setTimeout(step2, 900);
+      setTimeout(step3, 1800);
+    } else {
+      window.open(`https://wa.me/?text=${MSG}`, '_blank');
+    }
+  }
 
   /* ---- Events ---- */
   no.addEventListener('click', ()=>{
@@ -346,36 +424,35 @@
     applyYesGrowth();
     setNoText();
     mascotReact();
+    moveNoInside();
     vibrate(12);
-
-    // gentle dodge after a few "no"
-    if(noCount>=3){
-      const r = no.getBoundingClientRect(), pr = card.getBoundingClientRect();
-      const nx = Math.random()*(pr.width - r.width - 30) + 15;
-      const ny = Math.random()*20 + 0;
-      no.style.position='relative';
-      no.animate([{transform:`translate(0,0)`},{transform:`translate(${nx - (r.left-pr.left)}px, ${ny}px)`}],
-                 {duration:260, easing:'cubic-bezier(.2,.9,.2,1)', fill:'forwards'});
-    }
   });
 
   function onYes(){
     burstHearts();
     vibrate(20);
-    bubble.textContent = "YAAAŞASIN! 🎉 İlk buluşmayı planlayalım mı?";
+    bubble.textContent = "YAAAŞASIN! 🎉 Bir mesaj atıp planı konuşalım mı?";
     mouth.setAttribute('d','M40 56 Q50 70 60 56');
     no.disabled = true; no.style.opacity=.4;
     yesButtons.forEach(b=>{ b.textContent="Anlaştık 💞"; b.disabled=true; });
+    // Akıllı Mesaj panelini aç
+    smart.classList.add('show');
   }
   yesButtons.forEach(b => b.addEventListener('click', onYes));
+
+  btnSmart.addEventListener('click', openSmart);
+  btnWA.addEventListener('click', openWhatsApp);
+  btnIG.addEventListener('click', openInstagram);
+
+  // keyboard accessibility
+  [yesTop, yesFab, no, btnSmart, btnWA, btnIG].forEach(el=>{
+    if(!el) return;
+    el.addEventListener('keyup', e=>{ if(e.key==='Enter' || e.key===' ') el.click(); });
+  });
 
   // init
   setNoText();
   applyYesGrowth();
-
-  // accessibility: keyboard
-  [yesTop, yesFab, no].forEach(el=> el.addEventListener('keyup', e=>{ if(e.key==='Enter' || e.key===' ') el.click(); }));
-
 })();
 </script>
 </body>
