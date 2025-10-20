@@ -3,280 +3,379 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Benimle çıkar mısın? 💗</title>
+<title>Benimle çıkar mısın? — modern 💗</title>
 <style>
   :root{
-    --bg:#fcfbfe; --ink:#222; --muted:#777;
-    --yes:#ff5a8b; --no:#6b7cff; --card:#fff; --ring:#f1e7ff;
-    --yes-scale:1;           /* JS ile güncellenir */
-    --yes-font:1rem;         /* JS ile güncellenir */
-    --yes-pad:14px 22px;     /* JS ile güncellenir */
+    --bg0:#0f1020; --bg1:#191a2e; --ink:#e9e9ef; --muted:#a7a7b8;
+    --glass: rgba(255,255,255,.12);
+    --border: rgba(255,255,255,.18);
+    --yes:#ff4da0; --yes2:#ff7ac8;
+    --no:#7c86ff;  --no2:#9eb0ff;
+    --ok:#2ee6a6;
+    --yes-scale:1;
+    --yes-font:1rem;
+    --yes-pad:16px 22px;
   }
-  @media (prefers-color-scheme: dark){
+
+  /* Light */
+  @media (prefers-color-scheme: light){
     :root{
-      --bg:#141318; --ink:#eee; --muted:#a9a9a9;
-      --card:#1a1820; --ring:#2a2135;
-      --yes:#ff4d8d; --no:#7d88ff;
-    }
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
-             max(80px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
-    background:
-      radial-gradient(900px 600px at 15% 10%, #ffe9f3 0, transparent 55%),
-      radial-gradient(900px 600px at 85% 90%, #e9ebff 0, transparent 55%),
-      var(--bg);
-    color:var(--ink);
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
-    display:grid; place-items:center;
-  }
-  @media (prefers-color-scheme: dark){
-    body{
-      background:
-        radial-gradient(900px 600px at 15% 10%, #2a1e27 0, transparent 55%),
-        radial-gradient(900px 600px at 85% 90%, #1c1f34 0, transparent 55%),
-        var(--bg);
+      --bg0:#f6f7ff; --bg1:#ffffff; --ink:#1b1b22; --muted:#6d6e80;
+      --glass: rgba(255,255,255,.65);
+      --border: rgba(30,30,60,.08);
+      --yes:#ff4d8d; --yes2:#ff84b1;
+      --no:#666ee8;  --no2:#9aa2ff;
     }
   }
 
-  .card{
-    width:min(720px, 100%);
-    background:var(--card);
-    border-radius:28px;
-    padding:clamp(18px, 4vw, 36px) clamp(14px, 4vw, 24px) 18px;
-    box-shadow:0 12px 40px rgba(0,0,0,.08);
-    position:relative; overflow:visible;
+  *{box-sizing:border-box}
+  html,body{height:100%}
+
+  /* ====== Animated Background ====== */
+  body{
+    margin:0; color:var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    background: radial-gradient(1100px 800px at 15% 10%, rgba(255,120,178,.22), transparent 55%),
+                radial-gradient(1100px 800px at 85% 90%, rgba(124,134,255,.22), transparent 55%),
+                linear-gradient(120deg, var(--bg0), var(--bg1));
+    min-height:100%;
+    display:grid; place-items:center;
+    overflow-x:hidden;
+    padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right))
+             max(90px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
   }
-  @media (prefers-color-scheme: dark){
-    .card{ box-shadow:0 12px 40px rgba(0,0,0,.35); }
+
+  .blobs{ position:fixed; inset:0; pointer-events:none; filter: blur(50px) saturate(120%); opacity:.6 }
+  .blob{
+    position:absolute; width:42vmax; height:42vmax; border-radius:50%;
+    background: radial-gradient(circle at 30% 30%, var(--yes2), transparent 60%);
+    mix-blend-mode: plus-lighter;
+    animation: float 16s ease-in-out infinite;
+  }
+  .blob.b2{ left:auto; right:-10%; top:10%; background:radial-gradient(circle at 70% 30%, var(--no2), transparent 60%); animation-duration:20s }
+  .blob.b3{ left:40%; top:70%; background:radial-gradient(circle at 50% 50%, #2ee6a6, transparent 60%); animation-duration:22s }
+
+  @keyframes float{
+    0%,100%{ transform:translateY(0) translateX(0) scale(1) }
+    50%    { transform:translateY(-6%) translateX(3%) scale(1.06) }
+  }
+
+  /* ====== Glass Card ====== */
+  .card{
+    width:min(820px, 100%);
+    background: var(--glass);
+    border:1px solid var(--border);
+    border-radius:28px;
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    padding: clamp(20px, 4vw, 36px);
+    box-shadow:
+      0 10px 30px rgba(0,0,0,.18),
+      inset 0 1px 0 rgba(255,255,255,.15);
+    position:relative; overflow:visible;
+    transform-style: preserve-3d;
+  }
+
+  /* tilt hint shine */
+  .shine{
+    content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
+    background: radial-gradient(600px 300px at var(--mx,60%) var(--my,20%), rgba(255,255,255,.35), transparent 60%);
+    transition: opacity .3s ease;
+    opacity:.7;
   }
 
   h1{
-    margin:0 0 6px;
-    text-align:center;
-    font-size:clamp(24px, 7vw, 42px);
-    font-weight:900; letter-spacing:-.02em;
+    margin:0 0 6px; text-align:center; line-height:1.05;
+    font-size:clamp(26px, 5.8vw, 48px); font-weight:900; letter-spacing:-.02em;
   }
-  p.sub{
+  .sub{
     margin:0; text-align:center; color:var(--muted);
-    font-size:clamp(14px, 3.6vw, 16px)
+    font-size:clamp(14px, 2.9vw, 16px)
   }
 
-  .ring{
-    position:absolute; inset:-40%; border-radius:999px;
-    background: radial-gradient(circle at 50% 50%, var(--ring), transparent 60%);
-    filter: blur(10px); opacity:.5; pointer-events:none;
-  }
-
+  /* ====== Buttons ====== */
   .buttons{
-    margin: min(5vw,22px) auto 8px;
-    display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap;
-    min-height:90px; overflow:visible;
-  }
-  @media (max-width:520px){
-    .buttons{ flex-direction:column; gap:10px; }
+    margin: min(6vw,28px) auto 12px;
+    display:flex; flex-wrap:wrap; gap:14px; justify-content:center; align-items:center;
+    min-height:96px;
   }
 
   button{
-    border:0; border-radius:16px;
-    padding:14px 22px;
-    min-width: 200px;      /* genişliği serbest bırakıyoruz; büyüme net görünür */
-    width: auto;
-    min-height:48px;
-    font-weight:800; font-size:clamp(16px, 4.5vw, 18px);
-    cursor:pointer; touch-action:manipulation;
-    box-shadow:0 8px 24px rgba(0,0,0,.08);
-    transition:transform .18s ease, opacity .2s ease, background-color .2s ease, color .2s ease;
-  }
-  @media (prefers-color-scheme: dark){
-    button{ box-shadow:0 8px 24px rgba(0,0,0,.35); }
+    border:none; border-radius:16px; cursor:pointer; touch-action:manipulation;
+    min-height:52px; min-width:220px; font-weight:900; letter-spacing:.2px;
+    transition:
+      transform .18s cubic-bezier(.2,.9,.2,1),
+      background-color .18s ease, color .18s ease, box-shadow .18s ease, opacity .18s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,.18);
   }
 
   .btn-yes{
-    background:var(--yes); color:#fff;
-    transform: scale(var(--yes-scale));
+    background: linear-gradient(135deg, var(--yes), var(--yes2));
+    color:#fff;
+    transform: translateZ(0) scale(var(--yes-scale));
     font-size: calc(var(--yes-font));
     padding: var(--yes-pad);
   }
-  .btn-yes:active{ transform: scale(calc(var(--yes-scale) * .98)); }
-  .btn-no{ background:var(--no); color:#fff; }
+  .btn-yes:active{ transform:scale(calc(var(--yes-scale)*.98)); }
+
+  .btn-no{
+    background: linear-gradient(135deg, var(--no), var(--no2));
+    color:#fff; padding:16px 22px; font-size:1rem;
+  }
   .btn-no:active{ opacity:.9 }
 
-  /* Altta sabit Evet (tek elle kullanım) */
+  /* FAB yes bottom */
   .fab{
-    position: fixed;
-    left: 50%;
-    bottom: max(12px, env(safe-area-inset-bottom));
-    transform: translateX(-50%);
-    z-index: 50;
-    display:none; /* geniş ekranda gizli */
+    position: fixed; left: 50%; bottom: max(12px, env(safe-area-inset-bottom));
+    transform: translateX(-50%); z-index: 50; display:none;
+    filter: drop-shadow(0 12px 28px rgba(0,0,0,.28));
   }
-  .fab .btn-yes{
-    border-radius:999px;
-    min-width: clamp(220px, 70vw, 420px);
-    min-height:56px;
-  }
-  @media (max-width:640px){
-    .fab{ display:block; }
+  .fab .btn-yes{ border-radius:999px; min-width: clamp(240px, 72vw, 460px); min-height:60px }
+
+  @media (max-width:680px){
+    .buttons{ flex-direction:column }
+    .fab{ display:block }
   }
 
-  /* Maskot */
-  .mascot-wrap{
-    display:flex; gap:14px; align-items:center; justify-content:center; padding:10px 0 0; flex-wrap:wrap;
+  /* ====== Mascot (minimal SVG) ====== */
+  .mascot{
+    display:flex; gap:14px; justify-content:center; align-items:center; flex-wrap:wrap; margin-top:6px;
   }
+  .face{ width: clamp(74px, 22vw, 100px); height:auto; filter: drop-shadow(0 8px 18px rgba(0,0,0,.20)) }
   .bubble{
-    background:#fff; border:2px solid #f7d9e5; border-radius:14px; padding:10px 14px; font-weight:700;
-    box-shadow:0 8px 24px rgba(0,0,0,.04);
-    max-width: min(520px, 90%);
-    font-size:clamp(14px, 3.8vw, 16px);
-    text-align:center;
+    background: rgba(255,255,255,.75);
+    border:1px solid rgba(255,255,255,.6);
+    padding:10px 14px; border-radius:14px; font-weight:800;
+    color:inherit; backdrop-filter: blur(6px);
+    max-width:min(560px, 92%); text-align:center; font-size:clamp(14px, 3.5vw, 16px)
   }
   @media (prefers-color-scheme: dark){
-    .bubble{ background:#201d25; border-color:#3a2d3a; }
+    .bubble{ background: rgba(32,32,48,.55); border-color: rgba(255,255,255,.12) }
   }
-  .face{ width: clamp(72px, 24vw, 96px); height:auto; filter: drop-shadow(0 8px 16px rgba(0,0,0,.10)); }
 
+  /* ====== Hearts Gooey ====== */
+  .fx{
+    position:absolute; inset:0; pointer-events:none; overflow:hidden;
+    filter: url(#goo);
+  }
+  .heart{
+    position:absolute; font-size:22px; animation: rise 1.9s ease-in forwards; opacity:0;
+  }
+  @keyframes rise{
+    0%{ transform: translateY(10px) scale(.7); opacity:0 }
+    10%{ opacity:1 }
+    100%{ transform: translateY(-160%) scale(1.4); opacity:0 }
+  }
+
+  /* tiny info */
   .tiny{ text-align:center; color:var(--muted); font-size:12px; margin-top:8px }
 
-  /* animasyonlar */
-  @keyframes shake {0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-  .shake{ animation:shake .35s ease both; }
-  @keyframes pop {0%{transform:scale(.9); opacity:0}100%{transform:scale(1); opacity:1}}
-  .pop{ animation:pop .2s ease both }
-  .drop{ position:absolute; width:6px; height:8px; background:#7cc6ff; border-radius:50% 50% 60% 60%; opacity:.9; transform:translateY(0); animation:fall .9s ease-in forwards; }
-  @keyframes fall{ to{ transform:translateY(24px); opacity:0 } }
+  /* reduce motion */
+  @media (prefers-reduced-motion: reduce){
+    .blob{ animation:none }
+    .btn-yes,.btn-no{ transition:none }
+    .heart{ animation:none }
+  }
 </style>
 </head>
 <body>
-  <main class="card" aria-live="polite">
-    <div class="ring"></div>
-    <h1>Benimle çıkar mısın? 🫶</h1>
-    <p class="sub">Söz, her “Hayır”dan sonra <strong>Evet</strong> biraz daha ikna olur 😇</p>
+  <!-- animated blobs -->
+  <div class="blobs" aria-hidden="true">
+    <div class="blob b1" style="left:-8%; top:-6%"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <main class="card" id="card" aria-live="polite">
+    <div class="shine"></div>
+
+    <h1>Benimle çıkar mısın? ✨</h1>
+    <p class="sub">Her “Hayır”dan sonra <strong>Evet</strong> biraz daha ikna olur. Bakalım nereye kadar…</p>
 
     <div class="buttons" id="buttons">
       <button class="btn-yes" id="yesTop" aria-label="Evet">Evet</button>
-      <button class="btn-no" id="no" aria-label="Hayır">Hayır</button>
+      <button class="btn-no"  id="no"     aria-label="Hayır">Hayır</button>
+      <div class="fx" id="fx"></div>
     </div>
 
-    <div class="mascot-wrap">
+    <div class="mascot">
       <svg id="face" class="face" viewBox="0 0 100 100" aria-hidden="true">
-        <path id="heart" d="M50 83C38 72 16 58 16 38a16 16 0 0 1 30-8 16 16 0 0 1 30 8c0 20-22 34-26 45z" fill="#ffd7e5" stroke="#ffb3cd" stroke-width="3"/>
-        <circle id="eyeL" cx="39" cy="43" r="3.5" fill="#333"/>
-        <circle id="eyeR" cx="61" cy="43" r="3.5" fill="#333"/>
-        <path id="mouth" d="M40 58 Q50 64 60 58" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ffd1e7"/><stop offset="1" stop-color="#ffc3db"/>
+          </linearGradient>
+        </defs>
+        <path d="M50 83C38 72 16 58 16 38a16 16 0 0 1 30-8 16 16 0 0 1 30 8c0 20-22 34-26 45z" fill="url(#g)" stroke="#ff9ec7" stroke-width="3"/>
+        <circle id="eyeL" cx="39" cy="43" r="3.5" fill="#222"/>
+        <circle id="eyeR" cx="61" cy="43" r="3.5" fill="#222"/>
+        <path id="mouth" d="M40 58 Q50 64 60 58" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/>
       </svg>
-      <div id="bubble" class="bubble">Merhaba! Cevabını merak ediyorum ✨</div>
+      <div id="bubble" class="bubble">Merhaba! Cevabını heyecanla bekliyorum 💫</div>
     </div>
-    <p class="tiny">İpucu: Hayır’a bastıkça “Hayır” daha da hayır olur, “Evet” büyür.</p>
+
+    <p class="tiny">İpucu: “Hayır” inatçılaştıkça “Evet” büyür. Mobilde alttaki Evet de var 👇</p>
   </main>
 
-  <!-- Altta sabit Evet -->
+  <!-- bottom FAB -->
   <div class="fab">
     <button class="btn-yes" id="yesFab" aria-label="Evet (altta)">Evet</button>
   </div>
 
+  <!-- SVG filters for gooey hearts -->
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="4"/><feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"/></filter>
+  </svg>
+
 <script>
 (() => {
   const yesTop = document.getElementById('yesTop');
-  const yesFab = document.getElementById('yesFab');   // alttaki evet
+  const yesFab = document.getElementById('yesFab');
   const yesButtons = [yesTop, yesFab];
-  const no  = document.getElementById('no');
+  const no = document.getElementById('no');
   const bubble = document.getElementById('bubble');
-  const face = document.getElementById('face');
   const mouth = document.getElementById('mouth');
+  const eyeL = document.getElementById('eyeL');
+  const eyeR = document.getElementById('eyeR');
+  const card = document.getElementById('card');
+  const shine = card.querySelector('.shine');
+  const fx = document.getElementById('fx');
 
+  /* ---- Magnetic tilt + shine ---- */
+  card.addEventListener('pointermove', (e)=>{
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left)/r.width, y = (e.clientY - r.top)/r.height;
+    const rotX = (y - .5)*4, rotY = (x - .5)*-6;
+    card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    shine.style.setProperty('--mx', `${x*100}%`);
+    shine.style.setProperty('--my', `${y*100}%`);
+  });
+  card.addEventListener('pointerleave', ()=>{
+    card.style.transform = 'none';
+  });
+
+  /* ---- Copy that gets meaner ---- */
   const noTexts = [
-    "Hayır","HAYIR.","Net: Hayır ❌","Asla.","Israr etme, hayır.",
-    "Konu kapandı: Hayır.","Son kararım: Hayır.","Hayır ve tekrar hayır.",
-    "Hâlâ hayır.","Kesinlikle HAYIR."
+    "Hayır",
+    "HAYIR.",
+    "Net: Hayır ❌",
+    "Asla.",
+    "Israr etme, hayır.",
+    "Konu kapandı: Hayır.",
+    "Son kararım: Hayır.",
+    "Hayır ve tekrar hayır.",
+    "Hâlâ hayır.",
+    "Kesinlikle HAYIR."
   ];
-
   let noCount = 0;
 
-  /* --- Büyüme: font + padding + scale (senkron) --- */
-  function applyYesGrowth(){
-    // kademeli artış: her hayır %15 büyüme, üst sınır ekran genişliğine göre
-    const baseScale = 1 + noCount * 0.15;
-    const maxScale = 3.0; // aşırı büyümeyi sınırlayalım
-    const scale = Math.min(baseScale, maxScale);
-    const font = Math.min(1 + noCount * 0.08, 1.9); // rem çarpanı
-    const padV = Math.min(14 + noCount * 2, 26);    // dikey padding
-    const padH = Math.min(22 + noCount * 6, 60);    // yatay padding
+  /* ---- Haptics ---- */
+  const vibrate = (ms=14) => (navigator.vibrate?.(ms));
 
-    document.documentElement.style.setProperty('--yes-scale', scale.toString());
+  /* ---- YES growth (modern spring-ish) ---- */
+  function applyYesGrowth(){
+    const base = 1 + noCount * 0.16;
+    const scale = Math.min(base, 3.2);
+    const font = Math.min(1 + noCount * 0.085, 2.0); // rem multiplier
+    const padV = Math.min(16 + noCount * 2, 28);
+    const padH = Math.min(22 + noCount * 7, 68);
+    document.documentElement.style.setProperty('--yes-scale', scale);
     document.documentElement.style.setProperty('--yes-font', `calc(1rem * ${font})`);
     document.documentElement.style.setProperty('--yes-pad', `${padV}px ${padH}px`);
+    // subtle spring pop using WAAPI on both yes buttons
+    yesButtons.forEach(btn=>{
+      btn.animate([{transform:`scale(${scale*1.04})`},{transform:`scale(${scale})`}],
+        {duration:180, easing:'cubic-bezier(.2,1.4,.2,1)'} );
+    });
   }
 
-  function updateNoText(){
-    const idx = Math.min(noCount, noTexts.length-1);
-    no.textContent = noTexts[idx];
+  function setNoText(){
+    no.textContent = noTexts[Math.min(noCount, noTexts.length-1)];
   }
 
   function mascotReact(){
-    if(noCount === 0){
-      mouth.setAttribute('d', 'M40 58 Q50 64 60 58');
-      bubble.textContent = "Merhaba! Cevabını merak ediyorum ✨";
-    } else if(noCount <= 2){
-      mouth.setAttribute('d', 'M40 60 Q50 62 60 60');
-      bubble.textContent = "Naz mı yapıyorsun? 🙂";
-    } else if(noCount <= 4){
-      mouth.setAttribute('d', 'M40 63 Q50 58 60 63');
-      bubble.textContent = "Of… peki, yine de deniyorum.";
-    } else if(noCount <= 7){
-      mouth.setAttribute('d', 'M40 65 Q50 56 60 65');
-      bubble.textContent = "Kalbim minicik kırılıyor… 💧";
-      tear(42, 48); tear(58, 48);
-    } else {
-      mouth.setAttribute('d', 'M40 66 Q50 54 60 66');
-      bubble.textContent = "Tamam… ama içimde hâlâ bir EVET hissi var 😤";
-      tear(42, 48); tear(58, 48);
+    // eyes track the last click position a bit
+    const smile = 'M40 58 Q50 64 60 58';
+    const flat  = 'M40 60 Q50 62 60 60';
+    const sad   = 'M40 63 Q50 58 60 63';
+    const sadder= 'M40 66 Q50 54 60 66';
+
+    if(noCount === 0){ mouth.setAttribute('d', smile); bubble.textContent="Merhaba! Cevabını heyecanla bekliyorum 💫"; }
+    else if(noCount <= 2){ mouth.setAttribute('d', flat); bubble.textContent="Naz mı yapıyorsun? 🙂"; }
+    else if(noCount <= 5){ mouth.setAttribute('d', sad); bubble.textContent="Of… yine hayır mı?"; }
+    else { mouth.setAttribute('d', sadder); bubble.textContent="Kalbim kırılıyor ama pes etmiyorum 💧"; }
+
+    bubble.animate([{transform:'scale(.95)', opacity:.9},{transform:'scale(1)', opacity:1}], {duration:160, easing:'ease-out'});
+  }
+
+  /* ---- Hearts Gooey burst ---- */
+  function burstHearts(){
+    const rect = yesTop.getBoundingClientRect();
+    const baseX = rect.left + rect.width/2 - card.getBoundingClientRect().left;
+    const pool = ['💖','💗','💘','💝'];
+    for(let i=0;i<16;i++){
+      const span = document.createElement('span');
+      span.className = 'heart';
+      span.textContent = pool[i%pool.length];
+      span.style.left = (baseX + (Math.random()*120-60))+'px';
+      span.style.bottom = '8px';
+      span.style.fontSize = (18 + Math.random()*18)+'px';
+      span.style.animationDelay = (Math.random()*0.35)+'s';
+      fx.appendChild(span);
+      span.addEventListener('animationend', ()=> span.remove());
     }
-    face.classList.remove('shake'); bubble.classList.remove('pop');
-    void face.offsetWidth; face.classList.add('shake'); bubble.classList.add('pop');
   }
 
-  function tear(x, y){
-    const d = document.createElement('div');
-    d.className = 'drop';
-    const rect = face.getBoundingClientRect();
-    d.style.left = (rect.left + (x/100)*rect.width) + 'px';
-    d.style.top  = (rect.top + (y/100)*rect.height) + 'px';
-    document.body.appendChild(d);
-    d.addEventListener('animationend', ()=> d.remove());
+  /* ---- Eye track toward pointer (subtle) ---- */
+  let lastPointer = {x:0, y:0};
+  window.addEventListener('pointermove', (e)=>{ lastPointer = {x:e.clientX, y:e.clientY}; });
+  function trackEyes(){
+    const r = card.getBoundingClientRect();
+    const ex = (lastPointer.x - (r.left + r.width/2)) / (r.width/2);
+    const ey = (lastPointer.y - (r.top + r.height/2)) / (r.height/2);
+    const dx = Math.max(-2.5, Math.min(2.5, ex*2.5));
+    const dy = Math.max(-2.5, Math.min(2.5, ey*2.5));
+    eyeL.setAttribute('cx', 39+dx); eyeL.setAttribute('cy', 43+dy);
+    eyeR.setAttribute('cx', 61+dx); eyeR.setAttribute('cy', 43+dy);
+    requestAnimationFrame(trackEyes);
   }
+  trackEyes();
 
-  function vibrate(ms=12){
-    if (window.navigator && typeof window.navigator.vibrate === 'function'){
-      window.navigator.vibrate(ms);
-    }
-    // iOS'ta çoğu durumda yok; yine de sessiz geçiyoruz.
-  }
-
-  no.addEventListener('click', () => {
+  /* ---- Events ---- */
+  no.addEventListener('click', ()=>{
     noCount++;
     applyYesGrowth();
-    updateNoText();
+    setNoText();
     mascotReact();
-    vibrate(10);
+    vibrate(12);
+
+    // gentle dodge after a few "no"
+    if(noCount>=3){
+      const r = no.getBoundingClientRect(), pr = card.getBoundingClientRect();
+      const nx = Math.random()*(pr.width - r.width - 30) + 15;
+      const ny = Math.random()*20 + 0;
+      no.style.position='relative';
+      no.animate([{transform:`translate(0,0)`},{transform:`translate(${nx - (r.left-pr.left)}px, ${ny}px)`}],
+                 {duration:260, easing:'cubic-bezier(.2,.9,.2,1)', fill:'forwards'});
+    }
   });
 
   function onYes(){
-    bubble.textContent = "YAŞASIN! 🎉 O zaman tatlı bir plan yapalım.";
-    mouth.setAttribute('d', 'M40 56 Q50 70 60 56');
-    no.disabled = true; no.style.opacity = .4;
-    yesButtons.forEach(btn => { btn.textContent = "Anlaştık 💞"; btn.disabled = true; });
+    burstHearts();
     vibrate(20);
+    bubble.textContent = "YAAAŞASIN! 🎉 İlk buluşmayı planlayalım mı?";
+    mouth.setAttribute('d','M40 56 Q50 70 60 56');
+    no.disabled = true; no.style.opacity=.4;
+    yesButtons.forEach(b=>{ b.textContent="Anlaştık 💞"; b.disabled=true; });
   }
+  yesButtons.forEach(b => b.addEventListener('click', onYes));
 
-  yesButtons.forEach(btn => btn.addEventListener('click', onYes));
-
-  // ilk yükleme
-  updateNoText();
+  // init
+  setNoText();
   applyYesGrowth();
+
+  // accessibility: keyboard
+  [yesTop, yesFab, no].forEach(el=> el.addEventListener('keyup', e=>{ if(e.key==='Enter' || e.key===' ') el.click(); }));
+
 })();
 </script>
 </body>
