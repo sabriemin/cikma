@@ -6,33 +6,19 @@
 <title>Benimle çıkar mısın? — ultra modern</title>
 <style>
   :root{
-    /* varsayılan (mor) — sayfa yüklenince JS rastgele temayı atar */
+    /* varsayılan (mor) — JS yüklemede rastgele tema seçer */
     --bg0:#101024; --bg1:#1b1c33; --ink:#eef0ff; --muted:#aab0cc;
     --glass: rgba(255,255,255,.10);
     --border: rgba(255,255,255,.16);
     --yes:#a46bff; --yes2:#d47cff;
     --no:#7c86ff;  --no2:#9eb0ff;
     --blob1:#c38bff; --blob2:#8fa0ff; --blob3:#2ee6a6;
-    --yes-scale:1; --yes-font:1rem; --yes-pad:16px 22px;
+    --yes-scale:1; --yes-font:1rem; --yes-pad:16px 24px;
+    --btns-minh:112px; /* JS büyümeye göre günceller */
   }
-  /* deniz */
-  [data-theme="deniz"]{
-    --bg0:#081a22; --bg1:#0f2a33; --ink:#e9f6ff; --muted:#9fb7c3;
-    --yes:#00b3ff; --yes2:#4dd5ff; --no:#009a9a; --no2:#26c6c6;
-    --blob1:#00c2ff; --blob2:#00e6c3; --blob3:#7af0ff;
-  }
-  /* güneş */
-  [data-theme="gunes"]{
-    --bg0:#231403; --bg1:#321f07; --ink:#fff6e6; --muted:#d9c1a3;
-    --yes:#ff8a00; --yes2:#ffbb33; --no:#ff4d5a; --no2:#ff808a;
-    --blob1:#ffcc66; --blob2:#ff8a66; --blob3:#ffd54d;
-  }
-  /* zümrüt */
-  [data-theme="zumrut"]{
-    --bg0:#061511; --bg1:#0a221b; --ink:#e3fff6; --muted:#a6cbbf;
-    --yes:#00c98b; --yes2:#43e6aa; --no:#3aa1ff; --no2:#79c2ff;
-    --blob1:#00e6a6; --blob2:#38dfff; --blob3:#66ffcc;
-  }
+  [data-theme="deniz"]{ --bg0:#081a22; --bg1:#0f2a33; --ink:#e9f6ff; --muted:#9fb7c3; --yes:#00b3ff; --yes2:#4dd5ff; --no:#009a9a; --no2:#26c6c6; --blob1:#00c2ff; --blob2:#00e6c3; --blob3:#7af0ff; }
+  [data-theme="gunes"]{ --bg0:#231403; --bg1:#321f07; --ink:#fff6e6; --muted:#d9c1a3; --yes:#ff8a00; --yes2:#ffbb33; --no:#ff4d5a; --no2:#ff808a; --blob1:#ffcc66; --blob2:#ff8a66; --blob3:#ffd54d; }
+  [data-theme="zumrut"]{ --bg0:#061511; --bg1:#0a221b; --ink:#e3fff6; --muted:#a6cbbf; --yes:#00c98b; --yes2:#43e6aa; --no:#3aa1ff; --no2:#79c2ff; --blob1:#00e6a6; --blob2:#38dfff; --blob3:#66ffcc; }
 
   *{box-sizing:border-box}
   html,body{height:100%}
@@ -49,8 +35,6 @@
     padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right))
              max(24px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
   }
-
-  /* arka plan blobs */
   .blobs{ position:fixed; inset:0; pointer-events:none; filter: blur(48px) saturate(120%); opacity:.55 }
   .blob{ position:absolute; width:44vmax; height:44vmax; border-radius:50%;
     background: radial-gradient(circle at 30% 30%, var(--blob1), transparent 60%);
@@ -60,31 +44,29 @@
   .blob.b3{ left:40%; top:70%; background:radial-gradient(circle at 50% 50%, var(--blob3), transparent 60%); animation-duration:24s }
   @keyframes float{ 0%,100%{ transform:translate(0,0) scale(1)} 50%{ transform:translate(3%, -6%) scale(1.06)} }
 
-  /* kart */
   .card{
-    width:min(860px, 100%);
-    background: var(--glass);
-    border:1px solid var(--border);
-    border-radius:28px;
-    backdrop-filter: blur(16px) saturate(120%);
-    -webkit-backdrop-filter: blur(16px) saturate(120%);
-    padding: clamp(22px, 4vw, 40px);
-    box-shadow: 0 14px 40px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.14);
+    width:min(860px, 100%); background: var(--glass); border:1px solid var(--border); border-radius:28px;
+    backdrop-filter: blur(16px) saturate(120%); -webkit-backdrop-filter: blur(16px) saturate(120%);
+    padding: clamp(22px, 4vw, 40px); box-shadow: 0 14px 40px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.14);
     position:relative; overflow:visible; transform-style:preserve-3d;
   }
   .shine{ content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
     background: radial-gradient(700px 340px at var(--mx,60%) var(--my,20%), rgba(255,255,255,.35), transparent 60%);
     opacity:.7; transition:opacity .3s ease;
   }
-  h1{ margin:0 0 6px; text-align:center; line-height:1.05; font-size:clamp(28px, 6vw, 52px); font-weight:900; letter-spacing:-.02em; }
+  h1{ margin:0 0 6px; text-align:center; line-height:1.05; font-size:clamp(28px, 6vw, 52px); font-weight:900; letter-spacing:-.02em;
+      background:linear-gradient(90deg,var(--yes),var(--yes2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
   .sub{ margin:0; text-align:center; color:var(--muted); font-size:clamp(14px, 3vw, 17px) }
 
-  /* butonlar (tamamen kart içinde) */
+  /* --- Buton alanı: grid + çakışma koruma --- */
   .buttons{
-    position:relative; margin: min(6vw,30px) auto 12px;
-    display:flex; flex-wrap:wrap; gap:14px; justify-content:center; align-items:center;
-    min-height:104px;
+    position:relative;
+    margin:min(6vw,30px) auto 12px;
+    display:grid; grid-template-columns: 1fr 1fr; gap:14px; align-items:center; justify-items:center;
+    min-height: var(--btns-minh);
   }
+  @media (max-width:560px){ .buttons{ grid-template-columns:1fr; } }
+
   button{
     border:none; border-radius:16px; cursor:pointer; touch-action:manipulation;
     min-height:56px; min-width: clamp(220px, 40%, 360px);
@@ -96,13 +78,17 @@
     background: linear-gradient(135deg, var(--yes), var(--yes2));
     color:#fff; transform: translateZ(0) scale(var(--yes-scale));
     font-size: calc(var(--yes-font)); padding: var(--yes-pad);
+    position:relative; z-index:2;  /* her durumda önde ama çakışma olmaz */
   }
   .btn-yes:active{ transform:scale(calc(var(--yes-scale)*.985)); }
   .btn-no{
     background: linear-gradient(135deg, var(--no), var(--no2));
-    color:#fff; padding:16px 22px; font-size:1rem; position:relative;
+    color:#fff; padding:16px 24px; font-size:1rem; position:relative; z-index:1;
   }
   .btn-no:active{ opacity:.9 }
+
+  /* “Hayır” kaçarken de canvas içinde kalacak */
+  .btn-no.evasive{ position:absolute !important; }
 
   /* akıllı mesaj paneli (kart içinde) */
   .smart{ display:none; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px }
@@ -112,7 +98,7 @@
     backdrop-filter: blur(8px);
   }
 
-  /* avatar alanı */
+  /* avatar */
   .avatar{ display:flex; gap:16px; justify-content:center; align-items:center; flex-wrap:wrap; margin-top:10px; }
   .face{ width: clamp(88px, 22vw, 120px); height:auto; filter: drop-shadow(0 10px 22px rgba(0,0,0,.28)) }
   .bubble{
@@ -122,13 +108,17 @@
   }
   @media (prefers-color-scheme: dark){ .bubble{ background: rgba(32,32,48,.55); border-color: rgba(255,255,255,.12) } }
 
-  /* efekt katmanı (gooey kalpler + konfeti) */
+  /* efektler */
   .fx{ position:absolute; inset:0; pointer-events:none; overflow:hidden; filter: url(#goo); }
   .heart{ position:absolute; font-size:22px; animation: rise 2s ease-in forwards; opacity:0; }
   @keyframes rise{ 0%{ transform: translateY(10px) scale(.7); opacity:0 } 15%{ opacity:1 } 100%{ transform: translateY(-170%) scale(1.5); opacity:0 } }
   .confetti{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
   .piece{ position:absolute; width:10px; height:14px; border-radius:2px; opacity:.95; animation: conf 1.2s ease-out forwards }
   @keyframes conf{ 0%{ transform:translateY(0) rotate(0) } 100%{ transform:translateY(-160px) rotate(720deg); opacity:0 } }
+
+  .aura{ position:absolute; inset:-14px; border-radius:20px; pointer-events:none; opacity:.0; transition:opacity .25s ease;
+         background: radial-gradient(300px 160px at 50% 100%, color-mix(in oklab, var(--yes) 35%, transparent), transparent 60%); }
+  .aura.show{ opacity:.28 }
 
   .tiny{ text-align:center; color:var(--muted); font-size:12px; margin-top:10px }
 
@@ -138,7 +128,6 @@
 </style>
 </head>
 <body>
-  <!-- arka plan blobs -->
   <div class="blobs" aria-hidden="true">
     <div class="blob b1" style="left:-8%; top:-6%"></div>
     <div class="blob b2"></div>
@@ -148,7 +137,7 @@
   <main class="card" id="card" aria-live="polite">
     <div class="shine"></div>
 
-    <h1>Benimle çıkar mısın? ✨</h1>
+    <h1>Benimle çıkar mısın?</h1>
     <p class="sub">Her “Hayır”dan sonra <strong>Evet</strong> biraz daha ikna olur. Bakalım nereye kadar…</p>
 
     <div class="buttons" id="buttons">
@@ -156,9 +145,9 @@
       <button class="btn-no"  id="no"  aria-label="Hayır">Hayır</button>
       <div class="fx" id="fx"></div>
       <div class="confetti" id="confetti"></div>
+      <div class="aura" id="aura"></div>
     </div>
 
-    <!-- Evet sonrası akıllı mesaj (kart içinde) -->
     <div class="smart" id="smart">
       <button class="btn-outline" id="btnSmart">Mesaj At (Akıllı)</button>
       <button class="btn-outline" id="btnWA">WhatsApp</button>
@@ -166,7 +155,6 @@
     </div>
 
     <div class="avatar">
-      <!-- Gelişmiş vektör avatar: nefes + göz kırpma + bakış takibi -->
       <svg id="face" class="face" viewBox="0 0 120 120" aria-hidden="true">
         <defs>
           <radialGradient id="heartG" cx="40%" cy="35%" r="70%">
@@ -178,7 +166,6 @@
           <circle id="eyeL" cx="48" cy="50" r="4.2" fill="#111"/>
           <circle id="eyeR" cx="72" cy="50" r="4.2" fill="#111"/>
           <path id="mouth" d="M48 66 Q60 72 72 66" stroke="#111" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-          <!-- göz kapağı -->
           <rect id="lidL" x="44" y="42" width="8" height="8" rx="4" fill="#ffd4e9" opacity="0"/>
           <rect id="lidR" x="68" y="42" width="8" height="8" rx="4" fill="#ffd4e9" opacity="0"/>
         </g>
@@ -186,10 +173,9 @@
       <div id="bubble" class="bubble">Merhaba! Cevabını heyecanla bekliyorum 💫</div>
     </div>
 
-    <p class="tiny">Not: Tüm butonlar ve animasyonlar kartın içinde kalır. “Hayır” inatlaşırsa “Evet” yay gibi büyür.</p>
+    <p class="tiny">Not: Butonlar daima kart içinde kalır; “Hayır” kaçsa bile çakışma olmaz.</p>
   </main>
 
-  <!-- gooey filtresi -->
   <svg width="0" height="0" style="position:absolute">
     <filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="4"/><feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"/></filter>
   </svg>
@@ -197,18 +183,15 @@
 <script>
 (() => {
   const root = document.documentElement;
-
-  /* ====== 1) Tema: her yenilemede rastgele ====== */
-  const themes = ['mor', 'deniz', 'gunes', 'zumrut'];
-  (function setRandomTheme(){
+  const themes = ['mor','deniz','gunes','zumrut'];
+  (function randomTheme(){
     const pick = themes[Math.floor(Math.random()*themes.length)];
-    if(pick==='mor') root.removeAttribute('data-theme');
-    else root.setAttribute('data-theme', pick);
+    if(pick==='mor') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', pick);
   })();
 
-  /* Elements */
+  // elemanlar
   const yes = document.getElementById('yes');
-  const no = document.getElementById('no');
+  const no  = document.getElementById('no');
   const bubble = document.getElementById('bubble');
   const mouth = document.getElementById('mouth');
   const eyeL = document.getElementById('eyeL');
@@ -221,12 +204,13 @@
   const buttonsWrap = document.getElementById('buttons');
   const fx = document.getElementById('fx');
   const confetti = document.getElementById('confetti');
+  const aura = document.getElementById('aura');
   const smart = document.getElementById('smart');
   const btnSmart = document.getElementById('btnSmart');
   const btnWA = document.getElementById('btnWA');
   const btnIG = document.getElementById('btnIG');
 
-  /* ====== 2) 3D tilt + parıltı ====== */
+  // kart parıltı/tilt
   card.addEventListener('pointermove', (e)=>{
     const r = card.getBoundingClientRect();
     const x = (e.clientX - r.left)/r.width, y = (e.clientY - r.top)/r.height;
@@ -237,19 +221,10 @@
   });
   card.addEventListener('pointerleave', ()=>{ card.style.transform = 'none'; });
 
-  /* ====== 3) Avatar: nefes + göz kırpma + bakış takibi ====== */
-  // nefes
-  (function loopBreath(){
-    breath.animate([{transform:'scale(1)'},{transform:'scale(1.03)'}], {duration:2200, direction:'alternate', iterations:Infinity, easing:'ease-in-out'});
-  })();
-  // göz kırpma
-  function blink(){
-    lidL.animate([{opacity:0},{opacity:1},{opacity:0}], {duration:140, easing:'ease-in-out'});
-    lidR.animate([{opacity:0},{opacity:1},{opacity:0}], {duration:140, easing:'ease-in-out'});
-  }
+  // avatar nefes / göz kırpma / bakış
+  breath.animate([{transform:'scale(1)'},{transform:'scale(1.03)'}], {duration:2200, direction:'alternate', iterations:Infinity, easing:'ease-in-out'});
+  function blink(){ [lidL,lidR].forEach(el=> el.animate([{opacity:0},{opacity:1},{opacity:0}], {duration:140, easing:'ease-in-out'})); }
   setInterval(()=>{ if(Math.random()<0.35) blink(); }, 2200);
-
-  // bakış takibi
   let lastPointer = {x:0, y:0};
   window.addEventListener('pointermove', (e)=>{ lastPointer = {x:e.clientX, y:e.clientY}; });
   (function trackEyes(){
@@ -263,31 +238,32 @@
     requestAnimationFrame(trackEyes);
   })();
 
-  /* ====== 4) “Hayır” metinleri + büyüme ====== */
-  const noTexts = [
-    "Hayır","HAYIR.","Net: Hayır ❌","Asla.","Israr etme, hayır.",
-    "Konu kapandı: Hayır.","Son kararım: Hayır.","Hayır ve tekrar hayır.",
-    "Hâlâ hayır.","Kesinlikle HAYIR."
-  ];
+  // metinler
+  const noTexts = ["Hayır","HAYIR.","Net: Hayır ❌","Asla.","Israr etme, hayır.","Konu kapandı: Hayır.","Son kararım: Hayır.","Hayır ve tekrar hayır.","Hâlâ hayır.","Kesinlikle HAYIR."];
   let noCount = 0;
-
   const vibrate = (ms=14) => (navigator.vibrate?.(ms));
 
+  // Evet büyümesi + kapsayıcı yüksekliği (çakışmasız)
   function applyYesGrowth(){
     const base = 1 + noCount * 0.17;
     const scale = Math.min(base, 3.0);
     const font = Math.min(1 + noCount * 0.09, 2.0);
-    const padV = Math.min(16 + noCount * 2, 28);
-    const padH = Math.min(22 + noCount * 7, 68);
+    const padV = Math.min(16 + noCount * 2, 30);
+    const padH = Math.min(24 + noCount * 7, 70);
     root.style.setProperty('--yes-scale', scale);
     root.style.setProperty('--yes-font', `calc(1rem * ${font})`);
     root.style.setProperty('--yes-pad', `${padV}px ${padH}px`);
+    // kapsayıcı min-height’i ölçeğe göre arttır → üst üste binme yok
+    const baseMin = 112, extra = Math.round((scale-1)*60);
+    root.style.setProperty('--btns-minh', `${baseMin + extra}px`);
+
+    // aura parıltısı (çekicilik)
+    if(scale>1.5) aura.classList.add('show'); else aura.classList.remove('show');
+
     yes.animate([{transform:`scale(${scale*1.05})`},{transform:`scale(${scale})`}], {duration:200, easing:'cubic-bezier(.2,1.4,.2,1)'});
   }
 
-  function setNoText(){
-    no.textContent = noTexts[Math.min(noCount, noTexts.length-1)];
-  }
+  function setNoText(){ no.textContent = noTexts[Math.min(noCount, noTexts.length-1)]; }
 
   function mascotReact(){
     const smile='M48 66 Q60 74 72 66', flat='M48 68 Q60 68 72 68', sad='M48 71 Q60 64 72 71', sadder='M48 73 Q60 62 72 73';
@@ -298,21 +274,45 @@
     bubble.animate([{transform:'scale(.95)', opacity:.9},{transform:'scale(1)', opacity:1}], {duration:160, easing:'ease-out'});
   }
 
-  /* ====== 5) “Hayır” kart içinde kaçar ====== */
+  // “Hayır” kaçışı — canvas içinde kal + çakışma kontrolü
   function moveNoInside(){
     if(noCount < 3) return;
+    no.classList.add('evasive');
+
     const wrapRect = buttonsWrap.getBoundingClientRect();
+    const yesRect  = yes.getBoundingClientRect();
     const btnRect  = no.getBoundingClientRect();
-    const maxLeft = wrapRect.width - btnRect.width - 6;
-    const maxTop  = Math.max(0, wrapRect.height - btnRect.height - 6);
-    const left = Math.max(0, Math.min(maxLeft, Math.random()*maxLeft));
-    const top  = Math.max(0, Math.min(maxTop,  Math.random()*maxTop));
-    if(getComputedStyle(no).position !== 'absolute'){ no.style.position = 'absolute'; }
-    no.style.left = left + 'px';
-    no.style.top  = top  + 'px';
+
+    const maxLeft = wrapRect.width - btnRect.width - 8;
+    const maxTop  = Math.max(0, wrapRect.height - btnRect.height - 8);
+
+    // çakışma engelle: yesRect ile kesişmeyecek bir konum bul
+    const tries = 20;
+    let finalLeft = 0, finalTop = 0;
+    for(let i=0;i<tries;i++){
+      const left = Math.max(0, Math.random()*maxLeft);
+      const top  = Math.max(0, Math.random()*maxTop);
+
+      const test = {
+        left: wrapRect.left + left,
+        top:  wrapRect.top  + top,
+        right: wrapRect.left + left + btnRect.width,
+        bottom:wrapRect.top  + top  + btnRect.height
+      };
+      const overlap = !(test.right < yesRect.left || test.left > yesRect.right || test.bottom < yesRect.top || test.top > yesRect.bottom);
+      if(!overlap){ finalLeft = left; finalTop = top; break; }
+      // son çare: yes'in zıt tarafına it
+      if(i===tries-1){
+        finalLeft = (yesRect.left - wrapRect.left > wrapRect.width/2) ? Math.max(0, yesRect.left - wrapRect.left - btnRect.width - 12) : Math.min(maxLeft, yesRect.right - wrapRect.left + 12);
+        finalTop  = Math.min(maxTop, Math.abs(Math.random()*maxTop));
+      }
+    }
+
+    no.style.left = finalLeft + 'px';
+    no.style.top  = finalTop  + 'px';
   }
 
-  /* ====== 6) Kalp + Konfeti ====== */
+  // efektler
   function burstHearts(){
     const rect = yes.getBoundingClientRect();
     const baseX = rect.left + rect.width/2 - buttonsWrap.getBoundingClientRect().left;
@@ -331,7 +331,8 @@
   }
   function confettiBoom(){
     const area = buttonsWrap.getBoundingClientRect();
-    const colors = [getComputedStyle(root).getPropertyValue('--yes'), getComputedStyle(root).getPropertyValue('--yes2'), getComputedStyle(root).getPropertyValue('--no'), getComputedStyle(root).getPropertyValue('--no2'), '#ffffff'];
+    const s = getComputedStyle(root);
+    const colors = [s.getPropertyValue('--yes'), s.getPropertyValue('--yes2'), s.getPropertyValue('--no'), s.getPropertyValue('--no2'), '#ffffff'];
     for(let i=0;i<70;i++){
       const d = document.createElement('div');
       d.className = 'piece';
@@ -345,7 +346,7 @@
     }
   }
 
-  /* ====== 7) Akıllı mesaj ====== */
+  // akıllı mesaj
   const MSG = encodeURIComponent("Evet dedim! İlk buluşmayı planlayalım mı? 💘");
   function openWhatsApp(){
     const app = `whatsapp://send?text=${MSG}`, web = `https://wa.me/?text=${MSG}`;
@@ -371,7 +372,9 @@
     }
   }
 
-  /* ====== 8) Olaylar ====== */
+  // olaylar
+  function setNoText(){ no.textContent = ["Hayır","HAYIR.","Net: Hayır ❌","Asla.","Israr etme, hayır.","Konu kapandı: Hayır.","Son kararım: Hayır.","Hayır ve tekrar hayır.","Hâlâ hayır.","Kesinlikle HAYIR."][Math.min(noCount,9)]; }
+
   no.addEventListener('click', ()=>{
     noCount++;
     applyYesGrowth(); setNoText(); mascotReact(); moveNoInside(); vibrate(12);
@@ -391,11 +394,11 @@
   btnWA.addEventListener('click', openWhatsApp);
   btnIG.addEventListener('click', openInstagram);
 
-  // klavye erişilebilirliği
   [yes, no, btnSmart, btnWA, btnIG].forEach(el=> el.addEventListener('keyup', e=>{ if(e.key==='Enter' || e.key===' ') el.click(); }));
 
   // init
   setNoText(); applyYesGrowth();
+
 })();
 </script>
 </body>
