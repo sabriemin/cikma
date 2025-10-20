@@ -3,18 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Benimle çıkar mısın? — ultra modern</title>
+<title>Benimle çıkar mısın? — ultra plus+</title>
 <style>
   :root{
-    /* varsayılan (mor) — JS yüklemede rastgele tema seçer */
     --bg0:#101024; --bg1:#1b1c33; --ink:#eef0ff; --muted:#aab0cc;
-    --glass: rgba(255,255,255,.10);
-    --border: rgba(255,255,255,.16);
-    --yes:#a46bff; --yes2:#d47cff;
-    --no:#7c86ff;  --no2:#9eb0ff;
+    --glass: rgba(255,255,255,.10); --border: rgba(255,255,255,.16);
+    --yes:#a46bff; --yes2:#d47cff; --no:#7c86ff; --no2:#9eb0ff;
     --blob1:#c38bff; --blob2:#8fa0ff; --blob3:#2ee6a6;
-    --yes-scale:1; --yes-font:1rem; --yes-pad:16px 24px;
-    --btns-minh:112px; /* JS büyümeye göre günceller */
+    --yes-scale:1; --yes-font:1rem; --yes-pad:16px 24px; --btns-minh:120px;
   }
   [data-theme="deniz"]{ --bg0:#081a22; --bg1:#0f2a33; --ink:#e9f6ff; --muted:#9fb7c3; --yes:#00b3ff; --yes2:#4dd5ff; --no:#009a9a; --no2:#26c6c6; --blob1:#00c2ff; --blob2:#00e6c3; --blob3:#7af0ff; }
   [data-theme="gunes"]{ --bg0:#231403; --bg1:#321f07; --ink:#fff6e6; --muted:#d9c1a3; --yes:#ff8a00; --yes2:#ffbb33; --no:#ff4d5a; --no2:#ff808a; --blob1:#ffcc66; --blob2:#ff8a66; --blob3:#ffd54d; }
@@ -29,12 +25,9 @@
       radial-gradient(1200px 800px at 18% 10%, color-mix(in oklab, var(--blob1) 28%, transparent), transparent 55%),
       radial-gradient(1200px 800px at 82% 90%, color-mix(in oklab, var(--blob2) 28%, transparent), transparent 55%),
       linear-gradient(120deg, var(--bg0), var(--bg1));
-    min-height:100%;
-    display:grid; place-items:center;
-    overflow-x:hidden;
-    padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right))
-             max(24px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+    min-height:100%; overflow-x:hidden;
   }
+  .scene{ min-height:100dvh; display:grid; place-items:center; padding: max(16px, env(safe-area-inset-top)) 16px 28px; }
   .blobs{ position:fixed; inset:0; pointer-events:none; filter: blur(48px) saturate(120%); opacity:.55 }
   .blob{ position:absolute; width:44vmax; height:44vmax; border-radius:50%;
     background: radial-gradient(circle at 30% 30%, var(--blob1), transparent 60%);
@@ -45,24 +38,30 @@
   @keyframes float{ 0%,100%{ transform:translate(0,0) scale(1)} 50%{ transform:translate(3%, -6%) scale(1.06)} }
 
   .card{
-    width:min(860px, 100%); background: var(--glass); border:1px solid var(--border); border-radius:28px;
+    width:min(900px, 100%); background: var(--glass); border:1px solid var(--border); border-radius:28px;
     backdrop-filter: blur(16px) saturate(120%); -webkit-backdrop-filter: blur(16px) saturate(120%);
-    padding: clamp(22px, 4vw, 40px); box-shadow: 0 14px 40px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.14);
+    padding: clamp(20px, 4vw, 40px); box-shadow: 0 14px 40px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.14);
     position:relative; overflow:visible; transform-style:preserve-3d;
   }
-  .shine{ content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
-    background: radial-gradient(700px 340px at var(--mx,60%) var(--my,20%), rgba(255,255,255,.35), transparent 60%);
-    opacity:.7; transition:opacity .3s ease;
-  }
+  .shine{ position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
+    background: radial-gradient(700px 340px at var(--mx,60%) var(--my,20%), rgba(255,255,255,.35), transparent 60%); opacity:.7; transition:opacity .3s ease; }
   h1{ margin:0 0 6px; text-align:center; line-height:1.05; font-size:clamp(28px, 6vw, 52px); font-weight:900; letter-spacing:-.02em;
       background:linear-gradient(90deg,var(--yes),var(--yes2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
   .sub{ margin:0; text-align:center; color:var(--muted); font-size:clamp(14px, 3vw, 17px) }
 
-  /* --- Buton alanı: grid + çakışma koruma --- */
+  .toggles{ display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap; margin-top:10px; }
+  .chip{ display:inline-flex; gap:8px; align-items:center; background:var(--glass); border:1px solid var(--border);
+         padding:8px 12px; border-radius:999px; font-weight:800; font-size:14px; }
+  .chip input{ accent-color: var(--yes); width:18px; height:18px }
+
+  /* ipucu karuseli */
+  .tips{ display:grid; grid-auto-flow:column; grid-auto-columns:minmax(220px,1fr); gap:10px; overflow:auto hidden; padding:8px 2px; scroll-snap-type:x mandatory; }
+  .tip{ scroll-snap-align:center; background:rgba(255,255,255,.08); border:1px solid var(--border); border-radius:14px; padding:12px; font-weight:800; text-align:center }
+  .tip small{ display:block; opacity:.7; font-weight:700 }
+
   .buttons{
-    position:relative;
-    margin:min(6vw,30px) auto 12px;
-    display:grid; grid-template-columns: 1fr 1fr; gap:14px; align-items:center; justify-items:center;
+    position:relative; margin:min(6vw,30px) auto 12px;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:center; justify-items:center;
     min-height: var(--btns-minh);
   }
   @media (max-width:560px){ .buttons{ grid-template-columns:1fr; } }
@@ -74,57 +73,46 @@
     transition: transform .18s cubic-bezier(.2,.9,.2,1), background-color .18s ease, color .18s ease, box-shadow .18s ease, opacity .18s ease;
     box-shadow: 0 10px 28px rgba(0,0,0,.20);
   }
-  .btn-yes{
-    background: linear-gradient(135deg, var(--yes), var(--yes2));
-    color:#fff; transform: translateZ(0) scale(var(--yes-scale));
-    font-size: calc(var(--yes-font)); padding: var(--yes-pad);
-    position:relative; z-index:2;  /* her durumda önde ama çakışma olmaz */
-  }
+  .btn-yes{ background: linear-gradient(135deg, var(--yes), var(--yes2)); color:#fff;
+            transform: translateZ(0) scale(var(--yes-scale)); font-size: calc(var(--yes-font)); padding: var(--yes-pad); position:relative; z-index:2; }
   .btn-yes:active{ transform:scale(calc(var(--yes-scale)*.985)); }
-  .btn-no{
-    background: linear-gradient(135deg, var(--no), var(--no2));
-    color:#fff; padding:16px 24px; font-size:1rem; position:relative; z-index:1;
-  }
+  .btn-no{ background: linear-gradient(135deg, var(--no), var(--no2)); color:#fff; padding:16px 24px; font-size:1rem; position:relative; z-index:1; }
   .btn-no:active{ opacity:.9 }
-
-  /* “Hayır” kaçarken de canvas içinde kalacak */
   .btn-no.evasive{ position:absolute !important; }
 
-  /* akıllı mesaj paneli (kart içinde) */
-  .smart{ display:none; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px }
-  .smart.show{ display:flex }
-  .btn-outline{
-    background:transparent; color:var(--ink); border:1px solid var(--border); padding:12px 16px; border-radius:12px; font-weight:800;
-    backdrop-filter: blur(8px);
-  }
+  /* ilerleme halkası */
+  .prog{ width:92px; height:92px; position:absolute; right:8px; top:8px; opacity:.9 }
+  .prog circle{ fill:none; stroke-width:10; stroke-linecap:round }
+  .prog .bg{ stroke:rgba(255,255,255,.2) }
+  .prog .fg{ stroke:url(#grad); stroke-dasharray:283; stroke-dashoffset:283; transition: stroke-dashoffset .25s ease }
 
-  /* avatar */
-  .avatar{ display:flex; gap:16px; justify-content:center; align-items:center; flex-wrap:wrap; margin-top:10px; }
-  .face{ width: clamp(88px, 22vw, 120px); height:auto; filter: drop-shadow(0 10px 22px rgba(0,0,0,.28)) }
-  .bubble{
-    background: rgba(255,255,255,.75); border:1px solid rgba(255,255,255,.6);
-    padding:12px 16px; border-radius:14px; font-weight:800; color:inherit; backdrop-filter: blur(8px);
-    max-width:min(600px, 92%); text-align:center; font-size:clamp(14px, 3.4vw, 16px)
-  }
-  @media (prefers-color-scheme: dark){ .bubble{ background: rgba(32,32,48,.55); border-color: rgba(255,255,255,.12) } }
-
-  /* efektler */
-  .fx{ position:absolute; inset:0; pointer-events:none; overflow:hidden; filter: url(#goo); }
+  .fx, .confetti{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+  .fx{ filter:url(#goo) }
   .heart{ position:absolute; font-size:22px; animation: rise 2s ease-in forwards; opacity:0; }
   @keyframes rise{ 0%{ transform: translateY(10px) scale(.7); opacity:0 } 15%{ opacity:1 } 100%{ transform: translateY(-170%) scale(1.5); opacity:0 } }
-  .confetti{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
   .piece{ position:absolute; width:10px; height:14px; border-radius:2px; opacity:.95; animation: conf 1.2s ease-out forwards }
   @keyframes conf{ 0%{ transform:translateY(0) rotate(0) } 100%{ transform:translateY(-160px) rotate(720deg); opacity:0 } }
 
-  .aura{ position:absolute; inset:-14px; border-radius:20px; pointer-events:none; opacity:.0; transition:opacity .25s ease;
-         background: radial-gradient(300px 160px at 50% 100%, color-mix(in oklab, var(--yes) 35%, transparent), transparent 60%); }
-  .aura.show{ opacity:.28 }
+  .smart{ display:none; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px }
+  .smart.show{ display:flex }
+  .btn-outline{ background:transparent; color:var(--ink); border:1px solid var(--border); padding:12px 16px; border-radius:12px; font-weight:800; backdrop-filter: blur(8px); }
 
-  .tiny{ text-align:center; color:var(--muted); font-size:12px; margin-top:10px }
+  .avatar{ display:flex; gap:16px; justify-content:center; align-items:center; flex-wrap:wrap; margin-top:10px; }
+  .face{ width: clamp(88px, 22vw, 120px); height:auto; filter: drop-shadow(0 10px 22px rgba(0,0,0,.28)) }
+  .bubble{ background: rgba(255,255,255,.75); border:1px solid rgba(255,255,255,.6); padding:12px 16px; border-radius:14px; font-weight:800; backdrop-filter: blur(8px); max-width:min(600px, 92%); text-align:center; color:inherit; font-size:clamp(14px, 3.4vw, 16px) }
+  @media (prefers-color-scheme: dark){ .bubble{ background: rgba(32,32,48,.55); border-color: rgba(255,255,255,.12) } }
 
-  @media (prefers-reduced-motion: reduce){
-    .blob{ animation:none } .btn-yes,.btn-no{ transition:none } .heart,.piece{ animation:none }
-  }
+  /* mini-oyun overlay */
+  .mini{ position:absolute; inset:0; background:rgba(0,0,0,.28); display:none; align-items:center; justify-content:center; backdrop-filter: blur(6px); border-radius:28px; }
+  .mini.show{ display:flex }
+  .miniBox{ background:var(--glass); border:1px solid var(--border); border-radius:18px; padding:16px; width:min(560px,92%); box-shadow:0 10px 30px rgba(0,0,0,.25); text-align:center }
+  .arena{ position:relative; height:220px; margin-top:12px; border-radius:14px; border:1px dashed var(--border); overflow:hidden }
+  .catch{ position:absolute; background: linear-gradient(135deg, var(--yes), var(--yes2)); color:#fff; border:0; border-radius:999px; padding:10px 18px; font-weight:900; }
+  .timer{ font-weight:900; opacity:.8 }
+
+  .parallax{ height:70dvh; display:grid; place-items:center; color:#fff; text-align:center; font-weight:900; letter-spacing:.3px; }
+  .p1{ background-attachment: fixed; background-image: radial-gradient(600px 600px at 20% 30%, color-mix(in oklab, var(--blob1) 35%, transparent), transparent 60%), linear-gradient(120deg, var(--bg0), transparent); }
+  .p2{ background-attachment: fixed; background-image: radial-gradient(600px 600px at 80% 70%, color-mix(in oklab, var(--blob2) 35%, transparent), transparent 60%), linear-gradient(120deg, transparent, var(--bg1)); }
 </style>
 </head>
 <body>
@@ -134,47 +122,86 @@
     <div class="blob b3"></div>
   </div>
 
-  <main class="card" id="card" aria-live="polite">
-    <div class="shine"></div>
+  <section class="scene">
+    <main class="card" id="card" aria-live="polite">
+      <div class="shine"></div>
 
-    <h1>Benimle çıkar mısın?</h1>
-    <p class="sub">Her “Hayır”dan sonra <strong>Evet</strong> biraz daha ikna olur. Bakalım nereye kadar…</p>
+      <h1>Benimle çıkar mısın?</h1>
+      <p class="sub">Her “Hayır”dan sonra <strong>Evet</strong> biraz daha ikna olur. Bakalım nereye kadar…</p>
 
-    <div class="buttons" id="buttons">
-      <button class="btn-yes" id="yes" aria-label="Evet">Evet</button>
-      <button class="btn-no"  id="no"  aria-label="Hayır">Hayır</button>
-      <div class="fx" id="fx"></div>
-      <div class="confetti" id="confetti"></div>
-      <div class="aura" id="aura"></div>
-    </div>
+      <div class="toggles">
+        <label class="chip"><input type="checkbox" id="mute"> Sessiz</label>
+        <label class="chip"><input type="checkbox" id="tts"> Sesli avatar</label>
+        <label class="chip"><input type="checkbox" id="asr"> Sesle cevap (beta)</label>
+      </div>
 
-    <div class="smart" id="smart">
-      <button class="btn-outline" id="btnSmart">Mesaj At (Akıllı)</button>
-      <button class="btn-outline" id="btnWA">WhatsApp</button>
-      <button class="btn-outline" id="btnIG">Instagram</button>
-    </div>
+      <!-- İpucu karuseli -->
+      <div class="tips" id="tips">
+        <div class="tip"><small>#1</small> Beraber kahve? ☕</div>
+        <div class="tip"><small>#2</small> Sahil yürüyüşü? 🌊</div>
+        <div class="tip"><small>#3</small> Mini pizza + film? 🍕🎬</div>
+        <div class="tip"><small>#4</small> Kitapçı turu 📚</div>
+        <div class="tip"><small>#5</small> Gün batımı foto turu 📸🌇</div>
+      </div>
 
-    <div class="avatar">
-      <svg id="face" class="face" viewBox="0 0 120 120" aria-hidden="true">
-        <defs>
-          <radialGradient id="heartG" cx="40%" cy="35%" r="70%">
-            <stop offset="0%" stop-color="#ffd4e9"/><stop offset="100%" stop-color="#ffb3d7"/>
-          </radialGradient>
-        </defs>
-        <g id="breath" transform-origin="60 80">
-          <path d="M60 100C44 86 18 68 18 44a20 20 0 0 1 38-10 20 20 0 0 1 38 10c0 24-26 42-34 56z" fill="url(#heartG)" stroke="#ff9ec7" stroke-width="3"/>
-          <circle id="eyeL" cx="48" cy="50" r="4.2" fill="#111"/>
-          <circle id="eyeR" cx="72" cy="50" r="4.2" fill="#111"/>
-          <path id="mouth" d="M48 66 Q60 72 72 66" stroke="#111" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-          <rect id="lidL" x="44" y="42" width="8" height="8" rx="4" fill="#ffd4e9" opacity="0"/>
-          <rect id="lidR" x="68" y="42" width="8" height="8" rx="4" fill="#ffd4e9" opacity="0"/>
-        </g>
+      <!-- İlerleme halkası -->
+      <svg class="prog" viewBox="0 0 100 100" aria-hidden="true">
+        <defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--yes)"/><stop offset="1" stop-color="var(--yes2)"/></linearGradient></defs>
+        <circle class="bg" cx="50" cy="50" r="45"></circle>
+        <circle class="fg" id="ring" cx="50" cy="50" r="45"></circle>
       </svg>
-      <div id="bubble" class="bubble">Merhaba! Cevabını heyecanla bekliyorum 💫</div>
-    </div>
 
-    <p class="tiny">Not: Butonlar daima kart içinde kalır; “Hayır” kaçsa bile çakışma olmaz.</p>
-  </main>
+      <div class="buttons" id="buttons">
+        <button class="btn-yes" id="yes" aria-label="Evet">Evet</button>
+        <button class="btn-no"  id="no"  aria-label="Hayır">Hayır</button>
+        <div class="fx" id="fx"></div>
+        <div class="confetti" id="confetti"></div>
+      </div>
+
+      <!-- Mini Oyun -->
+      <div class="mini" id="mini">
+        <div class="miniBox">
+          <div><strong>Evet’i yakala!</strong> <span class="timer" id="timer">10</span> sn</div>
+          <div class="arena" id="arena">
+            <button class="catch" id="catch">Evet!</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evet sonrası seçenekler -->
+      <div class="smart" id="smart">
+        <button class="btn-outline" id="btnSmart">Mesaj At (Akıllı)</button>
+        <button class="btn-outline" id="btnWA">WhatsApp</button>
+        <button class="btn-outline" id="btnIG">Instagram</button>
+        <button class="btn-outline" id="btnShare">Paylaş</button>
+        <button class="btn-outline" id="btnICS">Takvime Ekle (.ics)</button>
+      </div>
+
+      <!-- Avatar -->
+      <div class="avatar">
+        <svg id="face" class="face" viewBox="0 0 120 120" aria-hidden="true">
+          <defs><radialGradient id="heartG" cx="40%" cy="35%" r="70%"><stop offset="0%" stop-color="#ffd4e9"/><stop offset="100%" stop-color="#ffb3d7"/></radialGradient></defs>
+          <g id="breath" transform-origin="60 80">
+            <path id="heart" d="M60 100C44 86 18 68 18 44a20 20 0 0 1 38-10 20 20 0 0 1 38 10c0 24-26 42-34 56z" fill="url(#heartG)" stroke="#ff9ec7" stroke-width="3"/>
+            <circle id="eyeL" cx="48" cy="50" r="4.2" fill="#111"/>
+            <circle id="eyeR" cx="72" cy="50" r="4.2" fill="#111"/>
+            <path id="mouth" d="M48 66 Q60 72 72 66" stroke="#111" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+            <path id="browL" d="M42 44 Q48 42 54 44" stroke="#111" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <path id="browR" d="M66 44 Q72 42 78 44" stroke="#111" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <rect id="lidL" x="44" y="42" width="8" height="8" rx="4" fill="#ffd4e9" opacity="0"/>
+            <rect id="lidR" x="68" y="42" width="8" height="8" rx="4" fill="#ffd4e9" opacity="0"/>
+          </g>
+        </svg>
+        <div id="bubble" class="bubble">Merhaba! Cevabını heyecanla bekliyorum 💫</div>
+      </div>
+
+      <p class="tiny">Butonlar daima kart içinde kalır; “Hayır” kaçsa bile çakışma yok.</p>
+    </main>
+  </section>
+
+  <!-- Modern parallax bölümler -->
+  <section class="parallax p1"><div>✨ küçük jestler büyük etkiler</div></section>
+  <section class="parallax p2"><div>💘 doğru zaman: şimdi</div></section>
 
   <svg width="0" height="0" style="position:absolute">
     <filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="4"/><feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"/></filter>
@@ -184,206 +211,193 @@
 (() => {
   const root = document.documentElement;
   const themes = ['mor','deniz','gunes','zumrut'];
-  (function randomTheme(){
-    const pick = themes[Math.floor(Math.random()*themes.length)];
-    if(pick==='mor') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', pick);
-  })();
+  (function randomTheme(){ const pick = themes[Math.floor(Math.random()*themes.length)]; if(pick==='mor') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', pick); })();
 
-  // elemanlar
-  const yes = document.getElementById('yes');
-  const no  = document.getElementById('no');
-  const bubble = document.getElementById('bubble');
-  const mouth = document.getElementById('mouth');
-  const eyeL = document.getElementById('eyeL');
-  const eyeR = document.getElementById('eyeR');
-  const lidL = document.getElementById('lidL');
-  const lidR = document.getElementById('lidR');
-  const breath = document.getElementById('breath');
-  const card = document.getElementById('card');
-  const shine = card.querySelector('.shine');
-  const buttonsWrap = document.getElementById('buttons');
-  const fx = document.getElementById('fx');
-  const confetti = document.getElementById('confetti');
-  const aura = document.getElementById('aura');
+  /* ===== Elements ===== */
+  const yes = document.getElementById('yes'), no = document.getElementById('no');
+  const bubble = document.getElementById('bubble'), mouth = document.getElementById('mouth');
+  const eyeL = document.getElementById('eyeL'), eyeR = document.getElementById('eyeR');
+  const browL = document.getElementById('browL'), browR = document.getElementById('browR');
+  const lidL = document.getElementById('lidL'), lidR = document.getElementById('lidR'), breath = document.getElementById('breath');
+  const card = document.getElementById('card'), shine = card.querySelector('.shine');
+  const buttonsWrap = document.getElementById('buttons'), ring = document.getElementById('ring');
+  const fx = document.getElementById('fx'), confetti = document.getElementById('confetti');
+  const tips = document.getElementById('tips');
+  const mini = document.getElementById('mini'), arena = document.getElementById('arena'), catchBtn = document.getElementById('catch'), timerEl = document.getElementById('timer');
   const smart = document.getElementById('smart');
-  const btnSmart = document.getElementById('btnSmart');
-  const btnWA = document.getElementById('btnWA');
-  const btnIG = document.getElementById('btnIG');
+  const btnSmart = document.getElementById('btnSmart'), btnWA = document.getElementById('btnWA'), btnIG = document.getElementById('btnIG'), btnShare = document.getElementById('btnShare'), btnICS = document.getElementById('btnICS');
+  const mute = document.getElementById('mute'), tts = document.getElementById('tts'), asr = document.getElementById('asr');
 
-  // kart parıltı/tilt
-  card.addEventListener('pointermove', (e)=>{
-    const r = card.getBoundingClientRect();
-    const x = (e.clientX - r.left)/r.width, y = (e.clientY - r.top)/r.height;
-    const rotX = (y - .5)*4, rotY = (x - .5)*-6;
-    card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-    shine.style.setProperty('--mx', `${x*100}%`);
-    shine.style.setProperty('--my', `${y*100}%`);
-  });
-  card.addEventListener('pointerleave', ()=>{ card.style.transform = 'none'; });
-
-  // avatar nefes / göz kırpma / bakış
-  breath.animate([{transform:'scale(1)'},{transform:'scale(1.03)'}], {duration:2200, direction:'alternate', iterations:Infinity, easing:'ease-in-out'});
-  function blink(){ [lidL,lidR].forEach(el=> el.animate([{opacity:0},{opacity:1},{opacity:0}], {duration:140, easing:'ease-in-out'})); }
-  setInterval(()=>{ if(Math.random()<0.35) blink(); }, 2200);
-  let lastPointer = {x:0, y:0};
-  window.addEventListener('pointermove', (e)=>{ lastPointer = {x:e.clientX, y:e.clientY}; });
-  (function trackEyes(){
-    const r = card.getBoundingClientRect();
-    const ex = (lastPointer.x - (r.left + r.width/2))/(r.width/2);
-    const ey = (lastPointer.y - (r.top + r.height/2))/(r.height/2);
-    const dx = Math.max(-3, Math.min(3, ex*3));
-    const dy = Math.max(-3, Math.min(3, ey*3));
-    eyeL.setAttribute('cx', 48+dx); eyeL.setAttribute('cy', 50+dy);
-    eyeR.setAttribute('cx', 72+dx); eyeR.setAttribute('cy', 50+dy);
-    requestAnimationFrame(trackEyes);
-  })();
-
-  // metinler
-  const noTexts = ["Hayır","HAYIR.","Net: Hayır ❌","Asla.","Israr etme, hayır.","Konu kapandı: Hayır.","Son kararım: Hayır.","Hayır ve tekrar hayır.","Hâlâ hayır.","Kesinlikle HAYIR."];
-  let noCount = 0;
-  const vibrate = (ms=14) => (navigator.vibrate?.(ms));
-
-  // Evet büyümesi + kapsayıcı yüksekliği (çakışmasız)
-  function applyYesGrowth(){
-    const base = 1 + noCount * 0.17;
-    const scale = Math.min(base, 3.0);
-    const font = Math.min(1 + noCount * 0.09, 2.0);
-    const padV = Math.min(16 + noCount * 2, 30);
-    const padH = Math.min(24 + noCount * 7, 70);
-    root.style.setProperty('--yes-scale', scale);
-    root.style.setProperty('--yes-font', `calc(1rem * ${font})`);
-    root.style.setProperty('--yes-pad', `${padV}px ${padH}px`);
-    // kapsayıcı min-height’i ölçeğe göre arttır → üst üste binme yok
-    const baseMin = 112, extra = Math.round((scale-1)*60);
-    root.style.setProperty('--btns-minh', `${baseMin + extra}px`);
-
-    // aura parıltısı (çekicilik)
-    if(scale>1.5) aura.classList.add('show'); else aura.classList.remove('show');
-
-    yes.animate([{transform:`scale(${scale*1.05})`},{transform:`scale(${scale})`}], {duration:200, easing:'cubic-bezier(.2,1.4,.2,1)'});
+  /* ===== Micro-sound (beep/pop) ===== */
+  let AC; const safeAC = ()=>{ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); return AC; };
+  function tone(freq=880, dur=0.07, type='sine', vol=0.08){
+    if(mute.checked) return; const ac=safeAC(); const o=ac.createOscillator(), g=ac.createGain();
+    o.type=type; o.frequency.value=freq; g.gain.value=vol; o.connect(g).connect(ac.destination);
+    o.start(); g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime+dur); o.stop(ac.currentTime+dur);
   }
+  const clickS = ()=> tone(660,0.05,'square',0.06);
+  const heartS = ()=> tone(880,0.08,'sine',0.08);
+  const confS  = ()=> { tone(560,0.05,'triangle',0.06); setTimeout(()=>tone(920,0.05,'triangle',0.06),60); };
+
+  /* ===== 3D tilt + shine ===== */
+  card.addEventListener('pointermove', (e)=>{ const r = card.getBoundingClientRect(), x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height; card.style.transform=`perspective(900px) rotateX(${(y-.5)*4}deg) rotateY(${(x-.5)*-6}deg)`; shine.style.setProperty('--mx', `${x*100}%`); shine.style.setProperty('--my', `${y*100}%`); });
+  card.addEventListener('pointerleave', ()=>{ card.style.transform='none'; });
+
+  /* ===== Avatar anim ===== */
+  breath.animate([{transform:'scale(1)'},{transform:'scale(1.03)'}], {duration:2200, direction:'alternate', iterations:Infinity, easing:'ease-in-out'});
+  const blink=()=>[lidL,lidR].forEach(el=> el.animate([{opacity:0},{opacity:1},{opacity:0}], {duration:140, easing:'ease-in-out'}));
+  setInterval(()=>{ if(Math.random()<0.35) blink(); }, 2200);
+  let ptr={x:0,y:0}; window.addEventListener('pointermove', e=> ptr={x:e.clientX,y:e.clientY});
+  (function trackEyes(){ const r=card.getBoundingClientRect(), ex=(ptr.x-(r.left+r.width/2))/(r.width/2), ey=(ptr.y-(r.top+r.height/2))/(r.height/2), dx=Math.max(-3,Math.min(3,ex*3)), dy=Math.max(-3,Math.min(3,ey*3)); eyeL.setAttribute('cx',48+dx); eyeL.setAttribute('cy',50+dy); eyeR.setAttribute('cx',72+dx); eyeR.setAttribute('cy',50+dy); requestAnimationFrame(trackEyes); })();
+
+  /* ===== Avatar ifadeleri ===== */
+  function setFace(mode){
+    const map={
+      happy:  {m:'M48 64 Q60 78 72 64', bL:'M42 44 Q48 42 54 44', bR:'M66 44 Q72 42 78 44'},
+      flat:   {m:'M48 68 Q60 68 72 68', bL:'M42 44 Q48 44 54 44', bR:'M66 44 Q72 44 78 44'},
+      sad:    {m:'M48 73 Q60 62 72 73', bL:'M42 42 Q48 46 54 42', bR:'M66 42 Q72 46 78 42'},
+      cheeky: {m:'M48 66 Q60 74 72 66', bL:'M42 43 Q48 41 54 43', bR:'M66 45 Q72 43 78 45'}
+    };
+    const s=map[mode]||map.flat; mouth.setAttribute('d',s.m); browL.setAttribute('d',s.bL); browR.setAttribute('d',s.bR);
+  }
+
+  /* ===== Texts / Growth / Ring ===== */
+  const noTexts=["Hayır","HAYIR.","Net: Hayır ❌","Asla.","Israr etme, hayır.","Konu kapandı: Hayır.","Son kararım: Hayır.","Hayır ve tekrar hayır.","Hâlâ hayır.","Kesinlikle HAYIR."];
+  let noCount=0, consecNo=0;
+  const vibrate=(ms=14)=>(navigator.vibrate?.(ms));
 
   function setNoText(){ no.textContent = noTexts[Math.min(noCount, noTexts.length-1)]; }
-
+  function applyYesGrowth(){
+    const base=1+noCount*0.17, scale=Math.min(base,3.0), font=Math.min(1+noCount*0.09,2.0), padV=Math.min(16+noCount*2,30), padH=Math.min(24+noCount*7,70);
+    root.style.setProperty('--yes-scale', scale); root.style.setProperty('--yes-font', `calc(1rem * ${font})`); root.style.setProperty('--yes-pad', `${padV}px ${padH}px`);
+    const baseMin=120, extra=Math.round((scale-1)*66); root.style.setProperty('--btns-minh', `${baseMin+extra}px`);
+    yes.animate([{transform:`scale(${scale*1.05})`},{transform:`scale(${scale})`}], {duration:200, easing:'cubic-bezier(.2,1.4,.2,1)'});
+    const perc=Math.min(100,(scale-1)/(3.0-1)*100), dash=283*(1-perc/100); ring.style.strokeDashoffset = dash;
+  }
   function mascotReact(){
-    const smile='M48 66 Q60 74 72 66', flat='M48 68 Q60 68 72 68', sad='M48 71 Q60 64 72 71', sadder='M48 73 Q60 62 72 73';
-    if(noCount===0){ mouth.setAttribute('d',smile); bubble.textContent="Merhaba! Cevabını heyecanla bekliyorum 💫"; }
-    else if(noCount<=2){ mouth.setAttribute('d',flat); bubble.textContent="Naz mı yapıyorsun? 🙂"; }
-    else if(noCount<=5){ mouth.setAttribute('d',sad); bubble.textContent="Of… yine hayır mı?"; }
-    else { mouth.setAttribute('d',sadder); bubble.textContent="Kalbim kırılıyor ama pes etmiyorum 💧"; }
+    if(noCount===0){ setFace('happy'); bubble.textContent="Merhaba! Cevabını heyecanla bekliyorum 💫"; }
+    else if(noCount<=2){ setFace('flat'); bubble.textContent="Naz mı yapıyorsun? 🙂"; }
+    else if(noCount<=5){ setFace('sad'); bubble.textContent="Of… yine hayır mı?"; }
+    else { setFace('cheeky'); bubble.textContent="Kalbim kırılıyor ama pes etmiyorum 💧"; }
     bubble.animate([{transform:'scale(.95)', opacity:.9},{transform:'scale(1)', opacity:1}], {duration:160, easing:'ease-out'});
+    if(tts.checked) speak(bubble.textContent);
   }
 
-  // “Hayır” kaçışı — canvas içinde kal + çakışma kontrolü
+  /* ===== Smart speak / ASR ===== */
+  function speak(text){ if(!tts.checked) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); const tr=speechSynthesis.getVoices().find(v=>/tr|turk/i.test(v.lang)); if(tr) u.voice=tr; u.lang='tr-TR'; speechSynthesis.speak(u); }
+  let recog=null; function startASR(){ const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){ asr.checked=false; alert("Tarayıcı ses tanımayı desteklemiyor."); return; } recog=new SR(); recog.lang='tr-TR'; recog.onresult=(e)=>{ const t=(e.results[0][0].transcript||"").toLowerCase(); if(t.includes("evet")) yes.click(); else if(t.includes("hayır")||t.includes("hayir")) no.click(); else speak("Anlamadım, evet mi hayır mı?"); }; recog.onend=()=>{ if(asr.checked) recog.start(); }; recog.start(); }
+  asr.addEventListener('change',()=>{ if(asr.checked) startASR(); else recog?.stop(); });
+
+  /* ===== No evasive inside + no overlap ===== */
   function moveNoInside(){
     if(noCount < 3) return;
     no.classList.add('evasive');
-
     const wrapRect = buttonsWrap.getBoundingClientRect();
     const yesRect  = yes.getBoundingClientRect();
     const btnRect  = no.getBoundingClientRect();
-
     const maxLeft = wrapRect.width - btnRect.width - 8;
     const maxTop  = Math.max(0, wrapRect.height - btnRect.height - 8);
-
-    // çakışma engelle: yesRect ile kesişmeyecek bir konum bul
     const tries = 20;
     let finalLeft = 0, finalTop = 0;
     for(let i=0;i<tries;i++){
-      const left = Math.max(0, Math.random()*maxLeft);
-      const top  = Math.max(0, Math.random()*maxTop);
-
-      const test = {
-        left: wrapRect.left + left,
-        top:  wrapRect.top  + top,
-        right: wrapRect.left + left + btnRect.width,
-        bottom:wrapRect.top  + top  + btnRect.height
-      };
+      const L = Math.max(0, Math.random()*maxLeft);
+      const T = Math.max(0, Math.random()*maxTop);
+      const test = {left:wrapRect.left+L, top:wrapRect.top+T, right:wrapRect.left+L+btnRect.width, bottom:wrapRect.top+T+btnRect.height};
       const overlap = !(test.right < yesRect.left || test.left > yesRect.right || test.bottom < yesRect.top || test.top > yesRect.bottom);
-      if(!overlap){ finalLeft = left; finalTop = top; break; }
-      // son çare: yes'in zıt tarafına it
+      if(!overlap){ finalLeft=L; finalTop=T; break; }
       if(i===tries-1){
-        finalLeft = (yesRect.left - wrapRect.left > wrapRect.width/2) ? Math.max(0, yesRect.left - wrapRect.left - btnRect.width - 12) : Math.min(maxLeft, yesRect.right - wrapRect.left + 12);
+        finalLeft = (yesRect.left-wrapRect.left > wrapRect.width/2) ? Math.max(0, yesRect.left-wrapRect.left-btnRect.width-12) : Math.min(maxLeft, yesRect.right-wrapRect.left+12);
         finalTop  = Math.min(maxTop, Math.abs(Math.random()*maxTop));
       }
     }
-
     no.style.left = finalLeft + 'px';
     no.style.top  = finalTop  + 'px';
   }
 
-  // efektler
+  /* ===== Gooey hearts + confetti ===== */
   function burstHearts(){
     const rect = yes.getBoundingClientRect();
     const baseX = rect.left + rect.width/2 - buttonsWrap.getBoundingClientRect().left;
     const pool = ['💖','💗','💘','💝'];
-    for(let i=0;i<18;i++){
-      const span = document.createElement('span');
-      span.className = 'heart';
-      span.textContent = pool[i%pool.length];
-      span.style.left = (baseX + (Math.random()*130-65))+'px';
-      span.style.bottom = '8px';
-      span.style.fontSize = (18 + Math.random()*20)+'px';
-      span.style.animationDelay = (Math.random()*0.35)+'s';
-      fx.appendChild(span);
-      span.addEventListener('animationend', ()=> span.remove());
+    for(let i=0;i<16;i++){
+      const s=document.createElement('span'); s.className='heart'; s.textContent=pool[i%pool.length];
+      s.style.left=(baseX+(Math.random()*120-60))+'px'; s.style.bottom='8px'; s.style.fontSize=(18+Math.random()*18)+'px'; s.style.animationDelay=(Math.random()*0.35)+'s';
+      fx.appendChild(s); s.addEventListener('animationend', ()=> s.remove());
     }
   }
   function confettiBoom(){
-    const area = buttonsWrap.getBoundingClientRect();
-    const s = getComputedStyle(root);
-    const colors = [s.getPropertyValue('--yes'), s.getPropertyValue('--yes2'), s.getPropertyValue('--no'), s.getPropertyValue('--no2'), '#ffffff'];
+    const area=buttonsWrap.getBoundingClientRect(), cs=getComputedStyle(root);
+    const colors=[cs.getPropertyValue('--yes'), cs.getPropertyValue('--yes2'), cs.getPropertyValue('--no'), cs.getPropertyValue('--no2'), '#ffffff'];
     for(let i=0;i<70;i++){
-      const d = document.createElement('div');
-      d.className = 'piece';
-      d.style.left = (Math.random()*area.width) + 'px';
-      d.style.bottom = '0px';
-      d.style.background = colors[i % colors.length];
-      d.style.transform = `translateY(${Math.random()*20}px) rotate(${Math.random()*360}deg)`;
-      d.style.animationDelay = (Math.random()*0.4)+'s';
-      confetti.appendChild(d);
-      d.addEventListener('animationend', ()=> d.remove());
+      const d=document.createElement('div'); d.className='piece';
+      d.style.left=(Math.random()*area.width)+'px'; d.style.bottom='0px'; d.style.background=colors[i%colors.length];
+      d.style.transform=`translateY(${Math.random()*20}px) rotate(${Math.random()*360}deg)`; d.style.animationDelay=(Math.random()*0.4)+'s';
+      confetti.appendChild(d); d.addEventListener('animationend', ()=> d.remove());
     }
   }
 
-  // akıllı mesaj
-  const MSG = encodeURIComponent("Evet dedim! İlk buluşmayı planlayalım mı? 💘");
-  function openWhatsApp(){
-    const app = `whatsapp://send?text=${MSG}`, web = `https://wa.me/?text=${MSG}`;
-    let bounced=false; const t=Date.now();
-    setTimeout(()=>{ if(!bounced && Date.now()-t<1200) window.open(web,'_blank'); }, 700);
-    window.location.href = app; setTimeout(()=>bounced=true,1200);
+  /* ===== Tips carousel auto-scroll ===== */
+  let tipIdx = 0; setInterval(()=>{ tipIdx=(tipIdx+1)%tips.children.length; tips.scrollTo({left: tips.children[tipIdx].offsetLeft - tips.clientWidth/2 + tips.children[tipIdx].clientWidth/2, behavior:'smooth'}); }, 2600);
+
+  /* ===== Mini-Game: Catch the YES ===== */
+  let miniTimer=0, intTimer=null, mover=null;
+  function openMini(){
+    mini.classList.add('show'); clickS();
+    timerEl.textContent='10'; miniTimer=10;
+    intTimer=setInterval(()=>{ miniTimer--; timerEl.textContent=miniTimer; if(miniTimer<=0){ closeMini(false); } }, 1000);
+    // move button randomly inside arena
+    const move = ()=>{
+      const r=arena.getBoundingClientRect(), w=catchBtn.offsetWidth, h=catchBtn.offsetHeight;
+      const x = Math.max(6, Math.random()*(r.width-w-12));
+      const y = Math.max(6, Math.random()*(r.height-h-12));
+      catchBtn.style.transform = `translate(${x}px, ${y}px)`;
+    };
+    move(); mover=setInterval(move, 550);
   }
-  function openInstagram(){
-    const app='instagram://direct', web='https://www.instagram.com/direct/inbox/';
-    let bounced=false; const t=Date.now();
-    setTimeout(()=>{ if(!bounced && Date.now()-t<1200) window.open(web,'_blank'); }, 700);
-    window.location.href = app; setTimeout(()=>bounced=true,1200);
+  function closeMini(success){
+    mini.classList.remove('show');
+    clearInterval(intTimer); clearInterval(mover);
+    if(success){ yes.click(); } else { bubble.textContent="Ah… yakalayamadın. Bir daha dener miyiz?"; setFace('sad'); if(tts.checked) speak(bubble.textContent); }
   }
-  function openSmart(){
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if(isMobile){
-      const webWa = `https://wa.me/?text=${MSG}`;
-      window.location.href = `whatsapp://send?text=${MSG}`;
-      setTimeout(()=>{ window.location.href = 'instagram://direct'; }, 900);
-      setTimeout(()=>{ window.open(webWa, '_blank'); }, 1800);
-    } else {
-      window.open(`https://wa.me/?text=${MSG}`, '_blank');
-    }
+  catchBtn.addEventListener('click', ()=>{ heartS(); closeMini(true); });
+
+  /* ===== Smart messaging / share / ICS ===== */
+  const MSG=encodeURIComponent("Evet dedim! İlk buluşmayı planlayalım mı? 💘");
+  function openWA(){ const app=`whatsapp://send?text=${MSG}`, web=`https://wa.me/?text=${MSG}`; let b=false; const t=Date.now(); setTimeout(()=>{ if(!b && Date.now()-t<1200) window.open(web,'_blank'); },700); window.location.href=app; setTimeout(()=>b=true,1200); }
+  function openIG(){ const app='instagram://direct', web='https://www.instagram.com/direct/inbox/'; let b=false; const t=Date.now(); setTimeout(()=>{ if(!b && Date.now()-t<1200) window.open(web,'_blank'); },700); window.location.href=app; setTimeout(()=>b=true,1200); }
+  function openSmart(){ const m=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent); if(m){ window.location.href=`whatsapp://send?text=${MSG}`; setTimeout(()=>{ window.location.href='instagram://direct'; },900); setTimeout(()=>{ window.open(`https://wa.me/?text=${MSG}`,'_blank'); },1800); } else { window.open(`https://wa.me/?text=${MSG}`,'_blank'); } }
+  async function shareIt(){ if(navigator.share){ try{ await navigator.share({title:'Benimle çıkar mısın? 💗', text: decodeURIComponent(MSG), url: location.href}); }catch{} } else { window.open(`https://wa.me/?text=${MSG}`,'_blank'); } }
+  function downloadICS(){
+    const now=new Date(), day=now.getDay(), diff=(5-day+7)%7 || 7; const d=new Date(now.getFullYear(), now.getMonth(), now.getDate()+diff, 19, 0, 0);
+    const end=new Date(d.getTime()+2*60*60*1000);
+    const fmt=(x)=> x.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+    const ics=`BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+DTSTAMP:${fmt(new Date())}
+DTSTART:${fmt(d)}
+DTEND:${fmt(end)}
+SUMMARY:İlk Buluşma 💘
+DESCRIPTION:Şahane bir akşam için buluşuyoruz!
+END:VEVENT
+END:VCALENDAR`;
+    const blob=new Blob([ics],{type:'text/calendar'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ilk-bulusma.ics'; document.body.appendChild(a); a.click(); a.remove();
   }
 
-  // olaylar
-  function setNoText(){ no.textContent = ["Hayır","HAYIR.","Net: Hayır ❌","Asla.","Israr etme, hayır.","Konu kapandı: Hayır.","Son kararım: Hayır.","Hayır ve tekrar hayır.","Hâlâ hayır.","Kesinlikle HAYIR."][Math.min(noCount,9)]; }
-
+  /* ===== Interactions ===== */
+  function setNoTextUI(){ setNoText(); }
   no.addEventListener('click', ()=>{
-    noCount++;
-    applyYesGrowth(); setNoText(); mascotReact(); moveNoInside(); vibrate(12);
+    noCount++; consecNo++; clickS();
+    applyYesGrowth(); setNoTextUI(); mascotReact(); moveNoInside(); vibrate(12);
+    if(consecNo>0 && consecNo%3===0) openMini();
   });
 
   function onYes(){
+    consecNo=0; heartS(); confS();
     burstHearts(); confettiBoom(); vibrate(22);
-    bubble.textContent = "YAAAŞASIN! 🎉 Bir mesaj atıp planı konuşalım mı?";
-    mouth.setAttribute('d','M48 64 Q60 78 72 64');
+    bubble.textContent = "YAAAŞASIN! 🎉 Bir mesaj atıp planı konuşalım mı?"; if(tts.checked) speak(bubble.textContent);
+    setFace('happy');
     no.disabled = true; no.style.opacity=.4;
     yes.textContent="Anlaştık 💞"; yes.disabled=true;
     smart.classList.add('show');
@@ -391,14 +405,19 @@
   yes.addEventListener('click', onYes);
 
   btnSmart.addEventListener('click', openSmart);
-  btnWA.addEventListener('click', openWhatsApp);
-  btnIG.addEventListener('click', openInstagram);
-
-  [yes, no, btnSmart, btnWA, btnIG].forEach(el=> el.addEventListener('keyup', e=>{ if(e.key==='Enter' || e.key===' ') el.click(); }));
+  btnWA.addEventListener('click', openWA);
+  btnIG.addEventListener('click', openIG);
+  btnShare.addEventListener('click', shareIt);
+  btnICS.addEventListener('click', downloadICS);
+  ;[yes,no,btnSmart,btnWA,btnIG,btnShare,btnICS].forEach(el=> el.addEventListener('keyup', e=>{ if(e.key==='Enter'||e.key===' ') el.click(); }));
 
   // init
-  setNoText(); applyYesGrowth();
-
+  (function init(){
+    const rootThemes=['mor','deniz','gunes','zumrut']; // sadece okunur
+    setNoTextUI(); applyYesGrowth();
+    // auto-scroll tips ilk öğe hizalansın
+    tips.scrollTo({left:0});
+  })();
 })();
 </script>
 </body>
