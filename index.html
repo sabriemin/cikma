@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Benimle çıkar mısın? 💘</title>
+<style>
+  :root{
+    --bg:#fff6fb;
+    --card:#ffffff;
+    --text:#2b2b2b;
+    --yes:#ff4d8d;
+    --no:#666ee8;
+    --accent:#ffd1e4;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+    color:var(--text);
+    background:
+      radial-gradient(1200px 800px at 80% 10%, #ffe3f0 0%, rgba(255,227,240,0) 60%) ,
+      radial-gradient(900px 600px at 10% 90%, #e8e9ff 0%, rgba(232,233,255,0) 55%),
+      var(--bg);
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+  }
+
+  .card{
+    width:min(680px, 100%);
+    background:var(--card);
+    border-radius:24px;
+    box-shadow:0 10px 35px rgba(0,0,0,.08);
+    padding:28px 22px 16px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  h1{
+    margin:6px 0 14px;
+    font-weight:800;
+    font-size:clamp(22px, 3vw, 34px);
+    text-align:center;
+    line-height:1.2;
+  }
+  .subtitle{
+    text-align:center;
+    margin-top:4px;
+    color:#666;
+    font-size:clamp(14px, 2.1vw, 16px);
+  }
+
+  .buttons{
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    margin:22px auto 10px;
+  }
+
+  button{
+    border:none;
+    border-radius:16px;
+    padding:14px 18px;
+    font-size:18px;
+    font-weight:700;
+    cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease, background-color .18s ease, color .18s ease;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+    min-width:120px;
+  }
+
+  #yesBtn{
+    background:var(--yes);
+    color:white;
+    transform:scale(1);
+  }
+  #yesBtn:hover{ transform:scale(1.06); }
+
+  #noBtn{
+    background:var(--no);
+    color:white;
+  }
+  #noBtn:hover{ transform:translateY(-2px); }
+
+  .footer{
+    margin-top:8px;
+    padding-top:10px;
+    border-top:1px dashed #eee;
+  }
+
+  /* Maskot alanı */
+  .mascotWrap{
+    display:flex;
+    gap:12px;
+    align-items:flex-end;
+    justify-content:center;
+    min-height:110px;
+    position:relative;
+  }
+
+  .mascot{
+    font-size:64px;
+    line-height:1;
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,.12));
+    transform-origin:bottom center;
+  }
+
+  .bubble{
+    max-width:min(520px, 85%);
+    background:white;
+    border:2px solid var(--accent);
+    border-radius:16px;
+    padding:10px 14px;
+    font-weight:600;
+    font-size:16px;
+    position:relative;
+    box-shadow:0 8px 24px rgba(0,0,0,.06);
+  }
+  .bubble:after{
+    content:"";
+    position:absolute;
+    bottom:-10px; left:40px;
+    border:10px solid transparent;
+    border-top-color:var(--accent);
+  }
+
+  /* Animasyonlar */
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-6px)}
+    40%{transform:translateX(6px)}
+    60%{transform:translateX(-4px)}
+    80%{transform:translateX(4px)}
+  }
+  .shake{ animation:shake .4s ease both; }
+
+  @keyframes pop {
+    0%{ transform:scale(.7); opacity:0 }
+    100%{ transform:scale(1); opacity:1 }
+  }
+  .pop{ animation:pop .25s ease both; }
+
+  /* Evet sonrası kalpler */
+  .hearts{
+    position:absolute; inset:0; pointer-events:none; overflow:hidden;
+  }
+  .heart{
+    position:absolute; font-size:24px; opacity:.9;
+    animation: floatUp 1.8s ease-in forwards;
+    will-change: transform, opacity;
+  }
+  @keyframes floatUp{
+    0%{ transform:translateY(20px) scale(.8); opacity:.0 }
+    20%{ opacity:1 }
+    100%{ transform:translateY(-140%) scale(1.4); opacity:0 }
+  }
+
+  .credits{
+    text-align:center; color:#aaa; font-size:12px; margin-top:6px;
+  }
+  .tiny{font-size:12px; font-weight:600; color:#888; text-align:center;}
+</style>
+</head>
+<body>
+  <main class="card" role="main" aria-live="polite">
+    <h1>Benimle çıkar mısın? 🥺</h1>
+    <p class="subtitle">Bak, naz yapmana saygım sonsuz… ama <span style="font-weight:800">Evet</span> butonu da biraz iddialı gelecek 😉</p>
+
+    <section class="buttons">
+      <button id="yesBtn" aria-label="Evet">Evet 💖</button>
+      <button id="noBtn" aria-label="Hayır">Hayır</button>
+    </section>
+
+    <div class="footer">
+      <div class="mascotWrap">
+        <div id="mascot" class="mascot" aria-hidden="true">😊</div>
+        <div id="bubble" class="bubble">Merhaba! Ben aşk danışmanı Maskot 🙋‍♂️</div>
+        <div class="hearts" id="hearts"></div>
+      </div>
+      <p class="tiny">Hayır’a bastıkça <em>Evet</em> büyür, ben de yorum yaparım 👇</p>
+    </div>
+
+    <p class="credits">© Kalp Fabrikası</p>
+  </main>
+
+<script>
+(function(){
+  const yesBtn   = document.getElementById('yesBtn');
+  const noBtn    = document.getElementById('noBtn');
+  const mascot   = document.getElementById('mascot');
+  const bubble   = document.getElementById('bubble');
+  const hearts   = document.getElementById('hearts');
+
+  const noTexts = [
+    "Hayır",
+    "Emin misin?",
+    "Cidden mi?",
+    "Lütfeeen 🥺",
+    "Bir kahveye ne dersin?",
+    "Bence tekrar düşün 🤔",
+    "Son şans olabilir…",
+    "Bak üzülüyorum 😿",
+    "Kalbim kırılıyor 💔",
+    "Peki ya minicik bir evet?",
+    "Tamam… ama bak çok üzüldüm",
+    "Şaka yaptım, Evet de 😤"
+  ];
+
+  let noCount = 0;
+
+  function updateYesSize(){
+    // Her hayır’da Evet biraz büyüsün; üst sınır koyuyoruz.
+    const scale = Math.min(1 + noCount * 0.18, 3.2);
+    yesBtn.style.transform = `scale(${scale})`;
+  }
+
+  function nextNoLabel(){
+    const idx = Math.min(noCount, noTexts.length - 1);
+    noBtn.textContent = noTexts[idx];
+  }
+
+  function reactMascot(){
+    // Basılan hayır sayısına göre yüz ve replik değişsin.
+    let face = "😊";
+    let line = "Merhaba! Ben aşk danışmanı Maskot 🙋‍♂️";
+
+    if(noCount === 0){ face="😊"; line="Hadi bakalım… ne diyeceksin?"; }
+    else if(noCount <= 2){ face="🙂"; line="Naz yapıyorsun sanırım…"; }
+    else if(noCount <= 4){ face="😟"; line="Bir şans versek mi acaba?"; }
+    else if(noCount <= 6){ face="🥺"; line="Kalbim pıt pıt ediyor…"; }
+    else if(noCount <= 8){ face="😢"; line="Gitgide üzülüyorum…"; }
+    else if(noCount <= 10){ face="😭"; line="Bu aşkın günahı neydi?"; }
+    else { face="😤"; line="Tamam! Evet de, bu iş tatlıya bağlansın!"; }
+
+    mascot.textContent = face;
+    bubble.textContent = line;
+
+    // Minik bir sarsılma animasyonu
+    mascot.classList.remove('shake'); bubble.classList.remove('pop');
+    void mascot.offsetWidth; // reflow hack to restart animation
+    mascot.classList.add('shake'); bubble.classList.add('pop');
+  }
+
+  function spawnHearts(){
+    // Evet tıklanınca birkaç kalp uçsun
+    const count = 16;
+    const rect = yesBtn.getBoundingClientRect();
+    for(let i=0;i<count;i++){
+      const span = document.createElement('span');
+      span.className = 'heart';
+      span.textContent = ['💖','💗','💘','💝'][i%4];
+      const startX = (rect.left + rect.width/2) + (Math.random()*80 - 40);
+      const startY = rect.top + window.scrollY;
+      span.style.left = (startX - yesBtn.offsetLeft) + 'px';
+      span.style.bottom = '10px';
+      span.style.fontSize = (18 + Math.random()*18) + 'px';
+      span.style.animationDelay = (Math.random()*0.5)+'s';
+      hearts.appendChild(span);
+      // Temizle
+      span.addEventListener('animationend', ()=> span.remove());
+    }
+  }
+
+  // Olaylar
+  noBtn.addEventListener('click', ()=>{
+    noCount++;
+    updateYesSize();
+    nextNoLabel();
+    reactMascot();
+  });
+
+  yesBtn.addEventListener('click', ()=>{
+    bubble.textContent = "YAAAAŞASIN! 🎉 Harika bir çift olacağız!";
+    mascot.textContent = "🤩";
+    spawnHearts();
+    // Evet'le işi bitirelim: Hayır'ı pasifleştir, Evet metnini değiştir
+    noBtn.disabled = true;
+    noBtn.style.opacity = .4;
+    yesBtn.textContent = "Anlaştık! 💞";
+    // Hafif zıplat
+    yesBtn.style.transition = 'transform .18s ease';
+    yesBtn.style.transform = 'scale(1.15)';
+    setTimeout(()=> updateYesSize(), 300);
+  });
+
+  // İlk yükleme
+  reactMascot();
+})();
+</script>
+</body>
+</html>
