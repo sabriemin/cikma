@@ -2,8 +2,8 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
-<title>Benimle çıkar mısın? — mobile-first</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Benimle çıkar mısın? — mobile-lock</title>
 <style>
   :root{
     --bg0:#101024; --bg1:#1b1c33; --ink:#eef0ff; --muted:#aab0cc;
@@ -11,14 +11,10 @@
     --yes:#a46bff; --yes2:#d47cff; --no:#7c86ff; --no2:#9eb0ff;
     --blob1:#c38bff; --blob2:#8fa0ff; --blob3:#2ee6a6;
 
-    /* büyüme kontrolü */
-    --yes-scale:1;        /* masaüstü için */
-    --yes-font:1rem;
-    --yes-pad:18px 26px;
-
-    --btns-minh:132px;    /* buton alanı asla sıkışmaz */
-    --card-pad: clamp(16px, 4vw, 40px);
+    --yes-scale:1; --yes-font:1rem; --yes-pad:18px 26px;
+    --btns-minh:132px; --card-pad: clamp(16px, 4vw, 40px);
   }
+
   [data-theme="deniz"]{ --bg0:#081a22; --bg1:#0f2a33; --ink:#e9f6ff; --muted:#9fb7c3; --yes:#00b3ff; --yes2:#4dd5ff; --no:#009a9a; --no2:#26c6c6; --blob1:#00c2ff; --blob2:#00e6c3; --blob3:#7af0ff; }
   [data-theme="gunes"]{ --bg0:#231403; --bg1:#321f07; --ink:#fff6e6; --muted:#d9c1a3; --yes:#ff8a00; --yes2:#ffbb33; --no:#ff4d5a; --no2:#ff808a; --blob1:#ffcc66; --blob2:#ff8a66; --blob3:#ffd54d; }
   [data-theme="zumrut"]{ --bg0:#061511; --bg1:#0a221b; --ink:#e3fff6; --muted:#a6cbbf; --yes:#00c98b; --yes2:#43e6aa; --no:#3aa1ff; --no2:#79c2ff; --blob1:#00e6a6; --blob2:#38dfff; --blob3:#66ffcc; }
@@ -28,12 +24,31 @@
   body{
     margin:0; color:var(--ink);
     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
-    background: radial-gradient(1200px 800px at 18% 10%, color-mix(in oklab, var(--blob1) 28%, transparent), transparent 55%),
-               radial-gradient(1200px 800px at 82% 90%, color-mix(in oklab, var(--blob2) 28%, transparent), transparent 55%),
-               linear-gradient(120deg, var(--bg0), var(--bg1));
-    min-height:100%; overflow-x:hidden;
+    background:
+      radial-gradient(1200px 800px at 18% 10%, color-mix(in oklab, var(--blob1) 28%, transparent), transparent 55%),
+      radial-gradient(1200px 800px at 82% 90%, color-mix(in oklab, var(--blob2) 28%, transparent), transparent 55%),
+      linear-gradient(120deg, var(--bg0), var(--bg1));
+    min-height:100%;
+    overflow-x:hidden;
   }
-  .scene{ min-height:100dvh; display:grid; place-items:center; padding: max(14px, env(safe-area-inset-top)) 14px max(24px, env(safe-area-inset-bottom)); }
+
+  /* Sayfanın tamamını kaplamayan sabit bir kabuk */
+  .shell{
+    min-height:100dvh;
+    display:grid;
+    place-items:center;
+    padding: max(14px, env(safe-area-inset-top)) 14px max(24px, env(safe-area-inset-bottom));
+  }
+  /* Mobilde max genişlik kilidi */
+  .wrap{
+    width: min(100%, 920px);
+    display:grid;
+    place-items:center;
+  }
+  @media (max-width: 480px){
+    .wrap{ width: min(100%, 420px); margin-inline:auto; }
+  }
+
   .blobs{ position:fixed; inset:0; pointer-events:none; filter: blur(48px) saturate(120%); opacity:.55 }
   .blob{ position:absolute; width:44vmax; height:44vmax; border-radius:50%;
     background: radial-gradient(circle at 30% 30%, var(--blob1), transparent 60%);
@@ -43,28 +58,34 @@
   .blob.b3{ left:40%; top:70%; background:radial-gradient(circle at 50% 50%, var(--blob3), transparent 60%); animation-duration:24s }
   @keyframes float{ 0%,100%{ transform:translate(0,0) scale(1)} 50%{ transform:translate(3%, -6%) scale(1.06)} }
 
+  /* Küçük ekranda blob’ları gizle → taşma/scroll riski yok */
+  @media (max-width: 540px){
+    .blobs{ display:none; }
+  }
+
   .card{
-    width:min(900px, 100%); background: var(--glass); border:1px solid var(--border); border-radius:24px;
+    width:100%;
+    background: var(--glass); border:1px solid var(--border); border-radius:24px;
     backdrop-filter: blur(16px) saturate(120%); -webkit-backdrop-filter: blur(16px) saturate(120%);
     padding: var(--card-pad); box-shadow: 0 14px 40px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.14);
     position:relative; overflow:visible; transform-style:preserve-3d;
   }
+  /* Mobilde kartın kendisi de kilitli genişlikte */
+  @media (max-width: 480px){
+    .card{ max-width: 420px; margin-inline:auto; }
+  }
+
   .shine{ position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
     background: radial-gradient(700px 340px at var(--mx,60%) var(--my,20%), rgba(255,255,255,.35), transparent 60%); opacity:.7; transition:opacity .3s ease; }
+
   h1{ margin:0 0 6px; text-align:center; line-height:1.05; font-size:clamp(26px, 5.8vw, 52px); font-weight:900; letter-spacing:-.02em;
       background:linear-gradient(90deg,var(--yes),var(--yes2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
   .sub{ margin:0; text-align:center; color:var(--muted); font-size:clamp(14px, 3.2vw, 17px) }
-
-  .toggles{ display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap; margin-top:12px; }
-  .chip{ display:inline-flex; gap:8px; align-items:center; background:var(--glass); border:1px solid var(--border);
-         padding:8px 12px; border-radius:999px; font-weight:800; font-size:14px; }
-  .chip input{ accent-color: var(--yes); width:18px; height:18px }
 
   .tips{ display:grid; grid-auto-flow:column; grid-auto-columns:minmax(200px,1fr); gap:10px; overflow:auto hidden; padding:8px 2px; scroll-snap-type:x mandatory; }
   .tip{ scroll-snap-align:center; background:rgba(255,255,255,.08); border:1px solid var(--border); border-radius:14px; padding:12px; font-weight:800; text-align:center }
   .tip small{ display:block; opacity:.7; font-weight:700 }
 
-  /* buton alanı */
   .buttons{
     position:relative; margin:min(6vw,30px) auto 12px;
     display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:center; justify-items:center;
@@ -75,28 +96,24 @@
 
   button{
     border:none; border-radius:14px; cursor:pointer; touch-action:manipulation;
-    height:auto; width: min(100%, 420px); /* mobilde taşma olmaz */
+    height:auto; width: min(100%, 420px);
     font-weight:900; letter-spacing:.2px;
     transition: transform .18s cubic-bezier(.2,.9,.2,1), background-color .18s ease, color .18s ease, box-shadow .18s ease, opacity .18s ease;
     box-shadow: 0 10px 28px rgba(0,0,0,.20);
     padding: 16px 20px; font-size: 1rem;
   }
 
-  /* masaüstünde scale; mobilde scale kapatılıp padding/punto büyütülür */
   .btn-yes{
     background: linear-gradient(135deg, var(--yes), var(--yes2)); color:#fff;
-    transform: translateZ(0) scale(var(--yes-scale));
-    font-size: calc(var(--yes-font)); padding: var(--yes-pad);
-    position:relative; z-index:2;
+    transform: translateZ(0) scale(var(--yes-scale)); /* masaüstü */
+    font-size: calc(var(--yes-font)); padding: var(--yes-pad); position:relative; z-index:2;
   }
-  @media (max-width:560px){
-    .btn-yes{ transform:none !important; }
-  }
+  /* Mobilde scale yerine padding/punto büyüt → taşma olmaz */
+  @media (max-width:560px){ .btn-yes{ transform:none !important; } }
 
   .btn-no{ background: linear-gradient(135deg, var(--no), var(--no2)); color:#fff; position:relative; z-index:1; }
-  .btn-no.evasive{ position:absolute !important; width:auto; } /* kaçarken doğal boy */
+  .btn-no.evasive{ position:absolute !important; width:auto; }
 
-  /* ilerleme halkası */
   .prog{ width:84px; height:84px; position:absolute; right:8px; top:8px; opacity:.95 }
   .prog circle{ fill:none; stroke-width:10; stroke-linecap:round }
   .prog .bg{ stroke:rgba(255,255,255,.2) }
@@ -114,18 +131,10 @@
   .smart.show{ display:flex }
   .btn-outline{ background:transparent; color:var(--ink); border:1px solid var(--border); padding:12px 16px; border-radius:12px; font-weight:800; backdrop-filter: blur(8px); }
 
-  /* avatar daha büyük ama esnek */
   .avatar{ display:flex; gap:14px; justify-content:center; align-items:center; flex-wrap:wrap; margin-top:14px; }
   .face{ width: clamp(150px, 40vw, 220px); height:auto; filter: drop-shadow(0 12px 26px rgba(0,0,0,.28)) }
   .bubble{ background: rgba(255,255,255,.75); border:1px solid rgba(255,255,255,.6); padding:14px 18px; border-radius:16px; font-weight:800; backdrop-filter: blur(8px); max-width:min(650px, 92%); text-align:center; color:inherit; font-size:clamp(14px, 3.4vw, 17px) }
   @media (prefers-color-scheme: dark){ .bubble{ background: rgba(32,32,48,.55); border-color: rgba(255,255,255,.12) } }
-
-  @media (max-width:420px){
-    :root{ --card-pad: clamp(12px, 5vw, 18px); }
-    h1{ font-size:clamp(24px,7vw,34px) }
-    .sub{ font-size:clamp(13px,3.5vw,15px) }
-    button{ width: 100%; border-radius:12px; }
-  }
 </style>
 </head>
 <body>
@@ -135,56 +144,50 @@
     <div class="blob b3"></div>
   </div>
 
-  <section class="scene">
-    <main class="card" id="card" aria-live="polite">
-      <div class="shine"></div>
+  <div class="shell">
+    <div class="wrap">
+      <main class="card" id="card" aria-live="polite">
+        <div class="shine"></div>
 
-      <h1>Benimle çıkar mısın?</h1>
-      <p class="sub">Her “Hayır”dan sonra <strong>Evet</strong> biraz daha ikna olur.</p>
+        <h1>Benimle çıkar mısın?</h1>
+        <p class="sub">Her “Hayır”dan sonra <strong>Evet</strong> biraz daha ikna olur.</p>
 
-      <div class="tips" id="tips">
-        <div class="tip"><small>#1</small> Beraber kahve? ☕</div>
-        <div class="tip"><small>#2</small> Sahil yürüyüşü? 🌊</div>
-        <div class="tip"><small>#3</small> Mini pizza + film? 🍕🎬</div>
-        <div class="tip"><small>#4</small> Kitapçı turu 📚</div>
-        <div class="tip"><small>#5</small> Gün batımı foto turu 📸🌇</div>
-      </div>
-
-      <!-- İlerleme halkası -->
-      <svg class="prog" viewBox="0 0 100 100" aria-hidden="true">
-        <defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--yes)"/><stop offset="1" stop-color="var(--yes2)"/></linearGradient></defs>
-        <circle class="bg" cx="50" cy="50" r="42"></circle>
-        <circle class="fg" id="ring" cx="50" cy="50" r="42"></circle>
-      </svg>
-
-      <div class="buttons" id="buttons">
-        <button class="btn-yes" id="yes" aria-label="Evet">Evet</button>
-        <button class="btn-no"  id="no"  aria-label="Hayır">Hayır</button>
-        <div class="fx" id="fx"></div>
-        <div class="confetti" id="confetti"></div>
-      </div>
-
-      <div class="smart" id="smart">
-        <button class="btn-outline" id="btnWA">WhatsApp</button>
-        <button class="btn-outline" id="btnIG">Instagram</button>
-      </div>
-
-      <div class="avatar">
-        <svg id="face" class="face" viewBox="0 0 120 120" aria-hidden="true">
-          <defs><radialGradient id="heartG" cx="40%" cy="35%" r="70%"><stop offset="0%" stop-color="#ffd4e9"/><stop offset="100%" stop-color="#ffb3d7"/></radialGradient></defs>
-          <g id="breath" transform-origin="60 80">
-            <path id="heart" d="M60 100C44 86 18 68 18 44a20 20 0 0 1 38-10 20 20 0 0 1 38 10c0 24-26 42-34 56z" fill="url(#heartG)" stroke="#ff9ec7" stroke-width="3"/>
-            <circle id="eyeL" cx="48" cy="50" r="4.8" fill="#111"/>
-            <circle id="eyeR" cx="72" cy="50" r="4.8" fill="#111"/>
-            <path id="mouth" d="M48 66 Q60 72 72 66" stroke="#111" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-            <rect id="lidL" x="44" y="42" width="10" height="10" rx="5" fill="#ffd4e9" opacity="0"/>
-            <rect id="lidR" x="68" y="42" width="10" height="10" rx="5" fill="#ffd4e9" opacity="0"/>
-          </g>
+        <!-- İlerleme halkası -->
+        <svg class="prog" viewBox="0 0 100 100" aria-hidden="true">
+          <defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--yes)"/><stop offset="1" stop-color="var(--yes2)"/></linearGradient></defs>
+          <circle class="bg" cx="50" cy="50" r="42"></circle>
+          <circle class="fg" id="ring" cx="50" cy="50" r="42"></circle>
         </svg>
-        <div id="bubble" class="bubble">Merhaba! Cevabını heyecanla bekliyorum 💫</div>
-      </div>
-    </main>
-  </section>
+
+        <div class="buttons" id="buttons">
+          <button class="btn-yes" id="yes" aria-label="Evet">Evet</button>
+          <button class="btn-no"  id="no"  aria-label="Hayır">Hayır</button>
+          <div class="fx" id="fx"></div>
+          <div class="confetti" id="confetti"></div>
+        </div>
+
+        <div class="smart" id="smart">
+          <button class="btn-outline" id="btnWA">WhatsApp</button>
+          <button class="btn-outline" id="btnIG">Instagram</button>
+        </div>
+
+        <div class="avatar">
+          <svg id="face" class="face" viewBox="0 0 120 120" aria-hidden="true">
+            <defs><radialGradient id="heartG" cx="40%" cy="35%" r="70%"><stop offset="0%" stop-color="#ffd4e9"/><stop offset="100%" stop-color="#ffb3d7"/></radialGradient></defs>
+            <g id="breath" transform-origin="60 80">
+              <path id="heart" d="M60 100C44 86 18 68 18 44a20 20 0 0 1 38-10 20 20 0 0 1 38 10c0 24-26 42-34 56z" fill="url(#heartG)" stroke="#ff9ec7" stroke-width="3"/>
+              <circle id="eyeL" cx="48" cy="50" r="4.8" fill="#111"/>
+              <circle id="eyeR" cx="72" cy="50" r="4.8" fill="#111"/>
+              <path id="mouth" d="M48 66 Q60 72 72 66" stroke="#111" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+              <rect id="lidL" x="44" y="42" width="10" height="10" rx="5" fill="#ffd4e9" opacity="0"/>
+              <rect id="lidR" x="68" y="42" width="10" height="10" rx="5" fill="#ffd4e9" opacity="0"/>
+            </g>
+          </svg>
+          <div id="bubble" class="bubble">Merhaba! Cevabını heyecanla bekliyorum 💫</div>
+        </div>
+      </main>
+    </div>
+  </div>
 
   <svg width="0" height="0" style="position:absolute">
     <filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="4"/><feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"/></filter>
@@ -194,7 +197,10 @@
 (() => {
   const root = document.documentElement;
   const themes = ['mor','deniz','gunes','zumrut'];
-  (function randomTheme(){ const pick = themes[Math.floor(Math.random()*themes.length)]; if(pick==='mor') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', pick); })();
+  (function randomTheme(){
+    const pick = themes[Math.floor(Math.random()*themes.length)];
+    if(pick==='mor') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', pick);
+  })();
 
   const yes = document.getElementById('yes'), no = document.getElementById('no');
   const bubble = document.getElementById('bubble'), mouth = document.getElementById('mouth');
@@ -206,11 +212,11 @@
   const smart = document.getElementById('smart');
   const btnWA = document.getElementById('btnWA'), btnIG = document.getElementById('btnIG');
 
-  /* tilt + shine */
+  /* kart tilt */
   card.addEventListener('pointermove', (e)=>{ const r = card.getBoundingClientRect(), x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height; card.style.transform=`perspective(900px) rotateX(${(y-.5)*4}deg) rotateY(${(x-.5)*-6}deg)`; shine.style.setProperty('--mx', `${x*100}%`); shine.style.setProperty('--my', `${y*100}%`); });
   card.addEventListener('pointerleave', ()=>{ card.style.transform='none'; });
 
-  /* avatar anim */
+  /* avatar */
   breath.animate([{transform:'scale(1)'},{transform:'scale(1.035)'}], {duration:2200, direction:'alternate', iterations:Infinity, easing:'ease-in-out'});
   const blink=()=>[lidL,lidR].forEach(el=> el.animate([{opacity:0},{opacity:1},{opacity:0}], {duration:140, easing:'ease-in-out'}));
   setInterval(()=>{ if(Math.random()<0.35) blink(); }, 2200);
@@ -224,10 +230,10 @@
 
   function setNoText(){ no.textContent = noTexts[Math.min(noCount, noTexts.length-1)]; }
   function applyYesGrowth(){
-    const isMobile = window.matchMedia('(max-width: 560px)').matches;
+    const isMobile = matchMedia('(max-width: 560px)').matches;
     const base=1+noCount*0.17, scale=Math.min(base,3.0);
     if(isMobile){
-      /* mobil: scale yerine padding & font büyüt */
+      // mobil: scale yerine padding+font
       const font = Math.min(1 + noCount * 0.10, 2.0);
       const padV = Math.min(18 + noCount * 3, 36);
       const padH = Math.min(24 + noCount * 8, 90);
@@ -255,7 +261,7 @@
     bubble.animate([{transform:'scale(.95)', opacity:.9},{transform:'scale(1)', opacity:1}], {duration:160, easing:'ease-out'});
   }
 
-  /* “Hayır” kaçışı — mobil güvenli alanlı */
+  /* Hayır kaçışı (her zaman kart içinde ve çakışmasız) */
   function moveNoInside(){
     if(noCount < 3) return;
     no.classList.add('evasive');
@@ -264,9 +270,9 @@
     const yesRect  = yes.getBoundingClientRect();
     const btnRect  = no.getBoundingClientRect();
 
-    const padding = 6; // güvenli tampon
-    const maxLeft = Math.max(0, wrapRect.width - btnRect.width - padding);
-    const maxTop  = Math.max(0, wrapRect.height - btnRect.height - padding);
+    const pad = 6;
+    const maxLeft = Math.max(0, wrapRect.width - btnRect.width - pad);
+    const maxTop  = Math.max(0, wrapRect.height - btnRect.height - pad);
 
     const tries = 24;
     let finalLeft = 0, finalTop = 0;
@@ -285,7 +291,6 @@
     no.style.top  = finalTop  + 'px';
   }
 
-  /* efektler */
   function burstHearts(){
     const rect = yes.getBoundingClientRect();
     const baseX = rect.left + rect.width/2 - buttonsWrap.getBoundingClientRect().left;
@@ -307,7 +312,6 @@
     }
   }
 
-  /* mesaj */
   const MSG=encodeURIComponent("Evet dedim! İlk buluşmayı planlayalım mı? 💘");
   function openWA(){ const app=`whatsapp://send?text=${MSG}`, web=`https://wa.me/?text=${MSG}`; let b=false; const t=Date.now(); setTimeout(()=>{ if(!b && Date.now()-t<1200) window.open(web,'_blank'); },700); window.location.href=app; setTimeout(()=>b=true,1200); }
   function openIG(){ const app='instagram://direct', web='https://www.instagram.com/direct/inbox/'; let b=false; const t=Date.now(); setTimeout(()=>{ if(!b && Date.now()-t<1200) window.open(web,'_blank'); },700); window.location.href=app; setTimeout(()=>b=true,1200); }
@@ -317,8 +321,7 @@
   function forceYesSpotlight(){
     no.style.display = 'none'; no.disabled = true;
     buttonsWrap.classList.add('spotlight');
-    // mobil güvenli büyüklük
-    const isMobile = window.matchMedia('(max-width: 560px)').matches;
+    const isMobile = matchMedia('(max-width: 560px)').matches;
     if(isMobile){
       root.style.setProperty('--yes-font', 'calc(1rem * 1.9)');
       root.style.setProperty('--yes-pad', '28px 64px');
@@ -330,17 +333,11 @@
     burstHearts(); confettiBoom(); bubble.textContent = "Tamam… kaderimizde EVET varmış! 💞";
   }
 
-  /* etkileşimler */
   function setNoTextUI(){ setNoText(); }
   no.addEventListener('click', ()=>{
-    // sayaç
     if(!maxReached){
       noCount++;
-      if(noCount >= noTexts.length-1){
-        maxReached = true;
-        noCount = noTexts.length-1;
-        afterMaxTries = 0;
-      }
+      if(noCount >= noTexts.length-1){ maxReached = true; noCount = noTexts.length-1; afterMaxTries = 0; }
     } else {
       afterMaxTries++;
       if(afterMaxTries >= 5){ forceYesSpotlight(); return; }
@@ -357,7 +354,7 @@
   }
   yes.addEventListener('click', onYes);
 
-  // ipuçlarını yavaşça kaydır
+  // tips auto-scroll
   (function autoTips(){
     const tips=document.getElementById('tips'); let i=0;
     setInterval(()=>{ const el=tips.children[i%tips.children.length]; tips.scrollTo({left: el.offsetLeft - tips.clientWidth/2 + el.clientWidth/2, behavior:'smooth'}); i++; }, 2800);
@@ -366,9 +363,8 @@
   // ilk kurulum
   (function init(){ setNoTextUI(); applyYesGrowth(); })();
 
-  // orientation/safe-area değişiminde ölçüleri tazele
-  window.addEventListener('resize', ()=>{ applyYesGrowth(); });
-
+  // ekran döndürme / güvenli alan değişiminde tazele
+  addEventListener('resize', ()=>{ applyYesGrowth(); });
 })();
 </script>
 </body>
