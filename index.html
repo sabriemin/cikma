@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Benimle çıkar mısın? — mobile-lock</title>
+<title>Benimle çıkar mısın? — mobile-lock v2</title>
 <style>
   :root{
     --bg0:#101024; --bg1:#1b1c33; --ink:#eef0ff; --muted:#aab0cc;
@@ -32,22 +32,9 @@
     overflow-x:hidden;
   }
 
-  /* Sayfanın tamamını kaplamayan sabit bir kabuk */
-  .shell{
-    min-height:100dvh;
-    display:grid;
-    place-items:center;
-    padding: max(14px, env(safe-area-inset-top)) 14px max(24px, env(safe-area-inset-bottom));
-  }
-  /* Mobilde max genişlik kilidi */
-  .wrap{
-    width: min(100%, 920px);
-    display:grid;
-    place-items:center;
-  }
-  @media (max-width: 480px){
-    .wrap{ width: min(100%, 420px); margin-inline:auto; }
-  }
+  .shell{ min-height:100dvh; display:grid; place-items:center; padding: max(14px, env(safe-area-inset-top)) 14px max(24px, env(safe-area-inset-bottom)); }
+  .wrap{ width:min(100%,920px); display:grid; place-items:center; }
+  @media (max-width:480px){ .wrap{ width:min(100%,420px); margin-inline:auto; } }
 
   .blobs{ position:fixed; inset:0; pointer-events:none; filter: blur(48px) saturate(120%); opacity:.55 }
   .blob{ position:absolute; width:44vmax; height:44vmax; border-radius:50%;
@@ -57,23 +44,16 @@
   .blob.b2{ right:-12%; top:8%; background:radial-gradient(circle at 70% 30%, var(--blob2), transparent 60%); animation-duration:22s }
   .blob.b3{ left:40%; top:70%; background:radial-gradient(circle at 50% 50%, var(--blob3), transparent 60%); animation-duration:24s }
   @keyframes float{ 0%,100%{ transform:translate(0,0) scale(1)} 50%{ transform:translate(3%, -6%) scale(1.06)} }
-
-  /* Küçük ekranda blob’ları gizle → taşma/scroll riski yok */
-  @media (max-width: 540px){
-    .blobs{ display:none; }
-  }
+  @media (max-width:540px){ .blobs{ display:none } }
 
   .card{
-    width:100%;
+    width:100%; max-width:920px;
     background: var(--glass); border:1px solid var(--border); border-radius:24px;
     backdrop-filter: blur(16px) saturate(120%); -webkit-backdrop-filter: blur(16px) saturate(120%);
     padding: var(--card-pad); box-shadow: 0 14px 40px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.14);
     position:relative; overflow:visible; transform-style:preserve-3d;
   }
-  /* Mobilde kartın kendisi de kilitli genişlikte */
-  @media (max-width: 480px){
-    .card{ max-width: 420px; margin-inline:auto; }
-  }
+  @media (max-width:480px){ .card{ max-width:420px; margin-inline:auto } }
 
   .shine{ position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
     background: radial-gradient(700px 340px at var(--mx,60%) var(--my,20%), rgba(255,255,255,.35), transparent 60%); opacity:.7; transition:opacity .3s ease; }
@@ -82,16 +62,12 @@
       background:linear-gradient(90deg,var(--yes),var(--yes2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
   .sub{ margin:0; text-align:center; color:var(--muted); font-size:clamp(14px, 3.2vw, 17px) }
 
-  .tips{ display:grid; grid-auto-flow:column; grid-auto-columns:minmax(200px,1fr); gap:10px; overflow:auto hidden; padding:8px 2px; scroll-snap-type:x mandatory; }
-  .tip{ scroll-snap-align:center; background:rgba(255,255,255,.08); border:1px solid var(--border); border-radius:14px; padding:12px; font-weight:800; text-align:center }
-  .tip small{ display:block; opacity:.7; font-weight:700 }
-
   .buttons{
     position:relative; margin:min(6vw,30px) auto 12px;
     display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:center; justify-items:center;
     min-height: var(--btns-minh); width:100%;
   }
-  @media (max-width:560px){ .buttons{ grid-template-columns:1fr; gap:10px; } }
+  @media (max-width:560px){ .buttons{ grid-template-columns:1fr; gap:12px; } }
   .buttons.spotlight{ grid-template-columns:1fr !important; min-height:200px; }
 
   button{
@@ -105,10 +81,9 @@
 
   .btn-yes{
     background: linear-gradient(135deg, var(--yes), var(--yes2)); color:#fff;
-    transform: translateZ(0) scale(var(--yes-scale)); /* masaüstü */
+    transform: translateZ(0) scale(var(--yes-scale)); /* desktop */
     font-size: calc(var(--yes-font)); padding: var(--yes-pad); position:relative; z-index:2;
   }
-  /* Mobilde scale yerine padding/punto büyüt → taşma olmaz */
   @media (max-width:560px){ .btn-yes{ transform:none !important; } }
 
   .btn-no{ background: linear-gradient(135deg, var(--no), var(--no2)); color:#fff; position:relative; z-index:1; }
@@ -152,9 +127,8 @@
         <h1>Benimle çıkar mısın?</h1>
         <p class="sub">Her “Hayır”dan sonra <strong>Evet</strong> biraz daha ikna olur.</p>
 
-        <!-- İlerleme halkası -->
         <svg class="prog" viewBox="0 0 100 100" aria-hidden="true">
-          <defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--yes)"/><stop offset="1" stop-color="var(--yes2)"/></linearGradient></defs>
+          <defs><linearGradient id="grad" x1="0" y="0" x2="1" y2="1"><stop offset="0" stop-color="var(--yes)"/><stop offset="1" stop-color="var(--yes2)"/></linearGradient></defs>
           <circle class="bg" cx="50" cy="50" r="42"></circle>
           <circle class="fg" id="ring" cx="50" cy="50" r="42"></circle>
         </svg>
@@ -197,10 +171,7 @@
 (() => {
   const root = document.documentElement;
   const themes = ['mor','deniz','gunes','zumrut'];
-  (function randomTheme(){
-    const pick = themes[Math.floor(Math.random()*themes.length)];
-    if(pick==='mor') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', pick);
-  })();
+  (function randomTheme(){ const pick = themes[Math.floor(Math.random()*themes.length)]; if(pick==='mor') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', pick); })();
 
   const yes = document.getElementById('yes'), no = document.getElementById('no');
   const bubble = document.getElementById('bubble'), mouth = document.getElementById('mouth');
@@ -212,28 +183,38 @@
   const smart = document.getElementById('smart');
   const btnWA = document.getElementById('btnWA'), btnIG = document.getElementById('btnIG');
 
-  /* kart tilt */
+  /* ===== Micro-sound (sessiz moda saygı) ===== */
+  let AC; const safeAC = ()=>{ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); return AC; };
+  function tone(freq=880, dur=0.07, type='sine', vol=0.08){
+    const ac=safeAC(); const o=ac.createOscillator(), g=ac.createGain();
+    o.type=type; o.frequency.value=freq; g.gain.value=vol; o.connect(g).connect(ac.destination);
+    o.start(); g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime+dur); o.stop(ac.currentTime+dur);
+  }
+  const laughS = ()=>{ // minik kahkaha
+    const ac=safeAC();
+    [0,90,160,220,280].forEach((t,i)=> setTimeout(()=> tone(600+ i*80, 0.06, 'triangle', 0.07), t));
+  };
+
+  /* ===== Tilt + Shine ===== */
   card.addEventListener('pointermove', (e)=>{ const r = card.getBoundingClientRect(), x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height; card.style.transform=`perspective(900px) rotateX(${(y-.5)*4}deg) rotateY(${(x-.5)*-6}deg)`; shine.style.setProperty('--mx', `${x*100}%`); shine.style.setProperty('--my', `${y*100}%`); });
   card.addEventListener('pointerleave', ()=>{ card.style.transform='none'; });
 
-  /* avatar */
+  /* ===== Avatar ===== */
   breath.animate([{transform:'scale(1)'},{transform:'scale(1.035)'}], {duration:2200, direction:'alternate', iterations:Infinity, easing:'ease-in-out'});
   const blink=()=>[lidL,lidR].forEach(el=> el.animate([{opacity:0},{opacity:1},{opacity:0}], {duration:140, easing:'ease-in-out'}));
   setInterval(()=>{ if(Math.random()<0.35) blink(); }, 2200);
   let ptr={x:0,y:0}; window.addEventListener('pointermove', e=> ptr={x:e.clientX,y:e.clientY});
   (function trackEyes(){ const r=card.getBoundingClientRect(), ex=(ptr.x-(r.left+r.width/2))/(r.width/2), ey=(ptr.y-(r.top+r.height/2))/(r.height/2), dx=Math.max(-3,Math.min(3,ex*3)), dy=Math.max(-3,Math.min(3,ey*3)); eyeL.setAttribute('cx',48+dx); eyeL.setAttribute('cy',50+dy); eyeR.setAttribute('cx',72+dx); eyeR.setAttribute('cy',50+dy); requestAnimationFrame(trackEyes); })();
 
-  /* metin & büyüme */
+  /* ===== Metin / Büyüme / Halka ===== */
   const noTexts=["Hayır","HAYIR.","Net: Hayır ❌","Asla.","Israr etme, hayır.","Konu kapandı: Hayır.","Son kararım: Hayır.","Hayır ve tekrar hayır.","Hâlâ hayır.","Kesinlikle HAYIR."];
   let noCount=0, afterMaxTries=0, maxReached=false;
-  const vibrate=(ms=14)=>(navigator.vibrate?.(ms));
 
   function setNoText(){ no.textContent = noTexts[Math.min(noCount, noTexts.length-1)]; }
   function applyYesGrowth(){
     const isMobile = matchMedia('(max-width: 560px)').matches;
     const base=1+noCount*0.17, scale=Math.min(base,3.0);
     if(isMobile){
-      // mobil: scale yerine padding+font
       const font = Math.min(1 + noCount * 0.10, 2.0);
       const padV = Math.min(18 + noCount * 3, 36);
       const padH = Math.min(24 + noCount * 8, 90);
@@ -247,21 +228,22 @@
       root.style.setProperty('--yes-font', `calc(1rem * ${font})`);
       root.style.setProperty('--yes-pad', `${padV}px ${padH}px`);
     }
-    const baseMin=132, extra=Math.round((Math.min(scale,2.6)-1)*70);
-    root.style.setProperty('--btns-minh', `${baseMin+extra}px`);
-    // halka
     const perc=Math.min(100,(scale-1)/(3.0-1)*100), dash=264*(1-perc/100); ring.style.strokeDashoffset = dash;
+    fitButtonArea(); // <-- YENİ: gerçek boylara göre min-height ayarla
   }
 
-  function mascotReact(){
-    if(noCount===0){ mouth.setAttribute('d','M48 66 Q60 74 72 66'); bubble.textContent="Merhaba! Cevabını heyecanla bekliyorum 💫"; }
-    else if(noCount<=2){ mouth.setAttribute('d','M48 68 Q60 68 72 68'); bubble.textContent="Naz mı yapıyorsun? 🙂"; }
-    else if(noCount<=5){ mouth.setAttribute('d','M48 73 Q60 62 72 73'); bubble.textContent="Of… yine hayır mı?"; }
-    else { mouth.setAttribute('d','M48 66 Q60 74 72 66'); bubble.textContent="Kalbim kırılıyor ama pes etmiyorum 💧"; }
-    bubble.animate([{transform:'scale(.95)', opacity:.9},{transform:'scale(1)', opacity:1}], {duration:160, easing:'ease-out'});
+  /* ===== Dinamik alan: butonlar asla üst üste binmesin ===== */
+  function fitButtonArea(){
+    // butonların gerçek boylarını ölç ve min-height’i artır
+    const rY = yes.getBoundingClientRect();
+    const rN = no.getBoundingClientRect();
+    const gap = getComputedStyle(buttonsWrap).gap || '12px';
+    const gapPx = parseFloat(gap);
+    const minH = Math.ceil(Math.max(56, rY.height) + Math.max(56, rN.height) + gapPx + 16);
+    buttonsWrap.style.minHeight = Math.max(minH, 132) + 'px';
   }
 
-  /* Hayır kaçışı (her zaman kart içinde ve çakışmasız) */
+  /* ===== “Hayır” kaçışı — çakışmasız ===== */
   function moveNoInside(){
     if(noCount < 3) return;
     no.classList.add('evasive');
@@ -291,6 +273,7 @@
     no.style.top  = finalTop  + 'px';
   }
 
+  /* ===== Efektler ===== */
   function burstHearts(){
     const rect = yes.getBoundingClientRect();
     const baseX = rect.left + rect.width/2 - buttonsWrap.getBoundingClientRect().left;
@@ -312,12 +295,25 @@
     }
   }
 
+  /* ===== Gülme/Neşe modu (EVET) ===== */
+  function avatarLaugh(){
+    // kocaman gülüş + kaşlar kalksın gibi etki: ağız yayını büyüt
+    mouth.setAttribute('d','M44 64 Q60 84 76 64');
+    // minik zıplama
+    breath.animate([{transform:'scale(1)'},{transform:'scale(1.08) translateY(-2px)'},{transform:'scale(1)'}], {duration:520, easing:'cubic-bezier(.2,1,.2,1)'});
+    // göz kırpma
+    [lidL,lidR].forEach(el=> el.animate([{opacity:0},{opacity:1},{opacity:0}], {duration:180, easing:'ease-in-out'}));
+    // kahkaha sesi (ince)
+    try{ laughS(); }catch{}
+  }
+
+  /* ===== Paylaş - ikonlar ===== */
   const MSG=encodeURIComponent("Evet dedim! İlk buluşmayı planlayalım mı? 💘");
   function openWA(){ const app=`whatsapp://send?text=${MSG}`, web=`https://wa.me/?text=${MSG}`; let b=false; const t=Date.now(); setTimeout(()=>{ if(!b && Date.now()-t<1200) window.open(web,'_blank'); },700); window.location.href=app; setTimeout(()=>b=true,1200); }
   function openIG(){ const app='instagram://direct', web='https://www.instagram.com/direct/inbox/'; let b=false; const t=Date.now(); setTimeout(()=>{ if(!b && Date.now()-t<1200) window.open(web,'_blank'); },700); window.location.href=app; setTimeout(()=>b=true,1200); }
   btnWA.addEventListener('click', openWA); btnIG.addEventListener('click', openIG);
 
-  /* SON KURAL: son “Hayır” +5 → Hayır kapanır, Evet ortada büyük */
+  /* ===== Son kural: son “Hayır” +5 → Hayır kapanır, Evet ortada büyük ===== */
   function forceYesSpotlight(){
     no.style.display = 'none'; no.disabled = true;
     buttonsWrap.classList.add('spotlight');
@@ -330,9 +326,13 @@
       root.style.setProperty('--yes-font', 'calc(1rem * 2.0)');
       root.style.setProperty('--yes-pad', '30px 80px');
     }
-    burstHearts(); confettiBoom(); bubble.textContent = "Tamam… kaderimizde EVET varmış! 💞";
+    burstHearts(); confettiBoom();
+    bubble.textContent = "Tamam… kaderimizde EVET varmış! 💞";
+    avatarLaugh();
+    fitButtonArea();
   }
 
+  /* ===== Etkileşimler ===== */
   function setNoTextUI(){ setNoText(); }
   no.addEventListener('click', ()=>{
     if(!maxReached){
@@ -342,29 +342,29 @@
       afterMaxTries++;
       if(afterMaxTries >= 5){ forceYesSpotlight(); return; }
     }
-    applyYesGrowth(); setNoTextUI(); mascotReact(); moveNoInside(); vibrate(12);
+    applyYesGrowth(); setNoTextUI(); moveNoInside(); fitButtonArea();
+    // avatar tepkisi
+    if(noCount<=2){ bubble.textContent="Naz mı yapıyorsun? 🙂"; mouth.setAttribute('d','M48 68 Q60 68 72 68'); }
+    else if(noCount<=5){ bubble.textContent="Of… yine hayır mı?"; mouth.setAttribute('d','M48 73 Q60 62 72 73'); }
+    else { bubble.textContent="Kalbim kırılıyor ama pes etmiyorum 💧"; mouth.setAttribute('d','M48 66 Q60 74 72 66'); }
   });
 
   function onYes(){
-    burstHearts(); confettiBoom(); vibrate(22);
+    burstHearts(); confettiBoom();
     bubble.textContent = "YAAAŞASIN! 🎉 Bir mesaj atıp planı konuşalım mı?";
+    avatarLaugh(); // <-- GÜLME / NEŞE
     no.disabled = true; no.style.opacity=.4;
     yes.textContent="Anlaştık 💞"; yes.disabled=true;
     smart.classList.add('show');
+    fitButtonArea();
   }
   yes.addEventListener('click', onYes);
 
-  // tips auto-scroll
-  (function autoTips(){
-    const tips=document.getElementById('tips'); let i=0;
-    setInterval(()=>{ const el=tips.children[i%tips.children.length]; tips.scrollTo({left: el.offsetLeft - tips.clientWidth/2 + el.clientWidth/2, behavior:'smooth'}); i++; }, 2800);
-  })();
-
   // ilk kurulum
-  (function init(){ setNoTextUI(); applyYesGrowth(); })();
+  (function init(){ setNoTextUI(); applyYesGrowth(); fitButtonArea(); })();
 
-  // ekran döndürme / güvenli alan değişiminde tazele
-  addEventListener('resize', ()=>{ applyYesGrowth(); });
+  // ekran değişince yeniden ölç
+  addEventListener('resize', ()=>{ applyYesGrowth(); fitButtonArea(); });
 })();
 </script>
 </body>
